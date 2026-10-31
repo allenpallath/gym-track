@@ -1,0 +1,75 @@
+@use 'mixins';
+
+.quick {
+  margin-bottom: 16px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  @include mixins.respond(md) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.routine {
+  @include mixins.card(18px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.body {
+  color: inherit;
+  text-decoration: none;
+
+  h2 {
+    margin: 12px 0 4px;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.last {
+  margin-top: 2px;
+  font-size: 0.78rem;
+}
+
+.thumbs {
+  display: flex;
+
+  img,
+  .thumb-empty {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 3px solid var(--gt-color-surface);
+    object-fit: cover;
+    background: var(--gt-color-surface-muted);
+  }
+
+  img + img {
+    margin-left: -12px;
+  }
+
+  .thumb-empty {
+    display: grid;
+    place-items: center;
+    color: var(--gt-color-muted);
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  > :first-child {
+    flex: 1;
+  }
+}

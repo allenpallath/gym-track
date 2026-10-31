@@ -1,0 +1,44 @@
+@use 'sass:map';
+@use 'tokens';
+
+// Mobile-first media query: `@include respond(md) { ... }`
+@mixin respond($bp) {
+  @media (min-width: map.get(tokens.$breakpoints, $bp)) {
+    @content;
+  }
+}
+
+@mixin display-heading($size: 1.75rem) {
+  font-family: var(--gt-font-display);
+  font-weight: 700;
+  font-size: $size;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+@mixin card($padding: 20px) {
+  background: var(--gt-color-surface);
+  border-radius: var(--gt-radius-xl);
+  box-shadow: var(--gt-shadow-card);
+  padding: $padding;
+}
+
+@mixin hide-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@mixin line-clamp($lines) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@mixin focus-ring {
+  outline: 2px solid var(--gt-color-ink);
+  outline-offset: 2px;
+}

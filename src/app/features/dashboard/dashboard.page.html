@@ -1,0 +1,77 @@
+<div class="page">
+  <header class="hero">
+    <p class="caption">{{ today | date: 'EEEE, d MMMM' }}</p>
+    <h1 class="display-heading--lg">{{ greeting }}</h1>
+  </header>
+
+  @if (activeSession.isActive()) {
+    <a class="live" routerLink="/session">
+      <div>
+        <span class="live-label"><span class="dot"></span>Workout in progress</span>
+        <strong class="live-name">{{ activeSession.draft()?.routineName }}</strong>
+      </div>
+      <div class="live-time">
+        <lucide-icon [img]="icons.Timer" [size]="18" />
+        <span class="display-number">{{ activeSession.elapsedSec() | duration: 'clock' }}</span>
+      </div>
+      <span class="live-cta">Resume <lucide-icon [img]="icons.ChevronRight" [size]="16" /></span>
+    </a>
+  }
+
+  <app-training-breakdown [sessions]="sessions()" />
+
+  <section class="section">
+    <div class="section-head">
+      <h2 class="display-heading">Your routines</h2>
+      <a class="link" routerLink="/routines">See all</a>
+    </div>
+
+    @if (routinesLoaded() && !routines().length) {
+      <app-empty-state title="No routines yet" message="Build your first routine and start a session from here." [icon]="icons.ListChecks">
+        <a appButton variant="accent" routerLink="/routines/new">
+          <lucide-icon [img]="icons.Plus" [size]="18" />
+          Create routine
+        </a>
+      </app-empty-state>
+    } @else {
+      <div class="carousel hide-scrollbar">
+        @for (r of routines(); track r.id) {
+          <app-card class="routine" padding="md">
+            <img appImgFallback class="routine-thumb" width="48" height="48" loading="lazy" [src]="r.exercises[0]?.image | exerciseImage" alt="" />
+            <a class="routine-name" [routerLink]="['/routines', r.id]">{{ r.name }}</a>
+            <span class="caption">{{ r.exercises.length }} exercises</span>
+            <button appButton variant="accent" size="sm" type="button" (click)="start(r)">
+              <lucide-icon [img]="icons.Play" [size]="14" />
+              Start
+            </button>
+          </app-card>
+        }
+        <a class="routine routine--new" routerLink="/routines/new">
+          <span class="plus"><lucide-icon [img]="icons.Plus" [size]="22" /></span>
+          New routine
+        </a>
+      </div>
+    }
+  </section>
+
+  @if (recentSessions().length) {
+    <section class="section">
+      <div class="section-head">
+        <h2 class="display-heading">Recent sessions</h2>
+        <a class="link" routerLink="/history">History</a>
+      </div>
+      <app-card padding="none">
+        @for (s of recentSessions(); track s.id) {
+          <a class="recent" routerLink="/history" [queryParams]="{ session: s.id }">
+            <div class="recent-main">
+              <strong>{{ s.routineName }}</strong>
+              <span class="caption">{{ s.startedAt | date: 'EEE d MMM' }} · {{ s.durationSec | duration }}</span>
+            </div>
+            <span class="recent-volume">{{ s.totalVolume | volume }}</span>
+            <lucide-icon class="chevron" [img]="icons.ChevronRight" [size]="18" />
+          </a>
+        }
+      </app-card>
+    </section>
+  }
+</div>

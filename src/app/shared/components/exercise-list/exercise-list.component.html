@@ -1,0 +1,111 @@
+<div class="search">
+  <lucide-icon class="search-icon" [img]="icons.Search" [size]="18" />
+  <input
+    class="field-input search-input"
+    type="search"
+    placeholder="Search 870+ exercises"
+    aria-label="Search exercises"
+    enterkeyhint="search"
+    [value]="query()"
+    (input)="onQueryInput($event)"
+  />
+  @if (query()) {
+    <button class="clear" type="button" aria-label="Clear search" (click)="clearQuery()">
+      <lucide-icon [img]="icons.X" [size]="16" />
+    </button>
+  }
+  <button
+    appButton
+    variant="outline"
+    iconOnly
+    type="button"
+    class="filter-toggle"
+    aria-label="More filters"
+    [attr.aria-expanded]="showFilters()"
+    (click)="showFilters.set(!showFilters())"
+  >
+    <lucide-icon [img]="icons.SlidersHorizontal" [size]="18" />
+    @if (activeFilterCount()) {
+      <span class="badge">{{ activeFilterCount() }}</span>
+    }
+  </button>
+</div>
+
+<div class="chip-row">
+  <button appChip type="button" [selected]="muscle() === null" (click)="toggleMuscle(null)">All</button>
+  @for (m of muscles; track m) {
+    <button appChip type="button" [selected]="muscle() === m" (click)="toggleMuscle(m)">{{ m }}</button>
+  }
+</div>
+
+@if (showFilters()) {
+  <div class="filters" animate.enter="fade-in">
+    <span class="filter-label">Equipment</span>
+    <div class="chip-row">
+      @for (eq of equipmentTypes; track eq) {
+        <button appChip small type="button" [selected]="equipment() === eq" (click)="toggleEquipment(eq)">{{ eq }}</button>
+      }
+    </div>
+    <span class="filter-label">Level</span>
+    <div class="chip-row">
+      @for (lv of levels; track lv) {
+        <button appChip small type="button" [selected]="level() === lv" (click)="toggleLevel(lv)">{{ lv }}</button>
+      }
+    </div>
+  </div>
+}
+
+<p class="count caption">
+  @if (status() === 'ready') {
+    {{ results().length }} exercises
+  }
+</p>
+
+@switch (status()) {
+  @case ('error') {
+    <div class="state">
+      <p>Couldn't load exercises.</p>
+      <button appButton variant="outline" size="sm" type="button" (click)="retry()">Retry</button>
+    </div>
+  }
+  @case ('ready') {
+    @if (results().length) {
+      <cdk-virtual-scroll-viewport class="viewport" [itemSize]="itemSize" minBufferPx="400" maxBufferPx="800">
+        <div
+          *cdkVirtualFor="let e of results(); trackBy: trackById"
+          class="row"
+          [class.row--clickable]="mode() === 'browse'"
+          (click)="onRowClick(e)"
+        >
+          <img appImgFallback class="thumb" width="84" height="84" loading="lazy" [src]="e.images[0] | exerciseImage" [alt]="e.name" />
+          <div class="info">
+            <h3 class="name">{{ e.name }}</h3>
+            <p class="meta">
+              <span class="muscle">{{ e.primaryMuscles[0] }}</span>
+              @if (e.equipment) {
+                · {{ e.equipment }}
+              }
+            </p>
+            <p class="desc line-clamp-2">{{ e.instructions[0] }}</p>
+          </div>
+          @if (mode() === 'pick') {
+            @if (addedIds().has(e.id)) {
+              <button appButton variant="accent" size="sm" iconOnly type="button" disabled aria-label="Added">
+                <lucide-icon [img]="icons.Check" [size]="18" />
+              </button>
+            } @else {
+              <button appButton variant="primary" size="sm" iconOnly type="button" [attr.aria-label]="'Add ' + e.name" (click)="onAdd($event, e)">
+                <lucide-icon [img]="icons.Plus" [size]="18" />
+              </button>
+            }
+          }
+        </div>
+      </cdk-virtual-scroll-viewport>
+    } @else {
+      <div class="state"><p>No exercises match your filters.</p></div>
+    }
+  }
+  @default {
+    <div class="state"><p class="caption">Loading exercises…</p></div>
+  }
+}

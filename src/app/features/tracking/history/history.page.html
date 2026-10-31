@@ -1,0 +1,56 @@
+<div class="page">
+  <app-page-header title="History" subtitle="Every workout you've logged" />
+
+  @if (!loaded()) {
+    <p class="caption">Loading history…</p>
+  } @else if (!sessions().length) {
+    <app-empty-state title="No workouts yet" message="Finish a session and it will show up here with charts and a calendar." [icon]="calendarIcon">
+      <a appButton variant="accent" routerLink="/routines">Pick a routine</a>
+    </app-empty-state>
+  } @else {
+    <app-card padding="lg" class="stats">
+      <span class="caption">This {{ monthLabel() }}</span>
+      <div class="stat-row">
+        <app-stat label="Sessions" [value]="monthStats().count" unit="workouts" />
+        <app-stat label="Total time" [value]="monthStats().durationSec | duration" />
+        <app-stat label="Volume" [value]="monthStats().volume | volume" />
+      </div>
+    </app-card>
+
+    <app-card padding="lg">
+      <app-month-calendar
+        [month]="viewMonth()"
+        [counts]="dayCounts()"
+        [selectedKey]="selectedDay()"
+        (daySelected)="selectDay($event)"
+        (monthChange)="changeMonth($event)"
+      />
+    </app-card>
+
+    <section class="list">
+      <h2 class="display-heading">{{ listTitle() }}</h2>
+      @for (s of visibleSessions(); track s.id) {
+        <app-session-card
+          [attr.id]="'session-' + s.id"
+          [session]="s"
+          [expanded]="expandedId() === s.id"
+          (toggled)="toggleSession(s.id)"
+          (deleted)="deleteSession(s)"
+        />
+      } @empty {
+        <p class="caption">No workouts on this {{ selectedDay() ? 'day' : 'month' }}.</p>
+      }
+    </section>
+
+    <section class="list">
+      <h2 class="display-heading">Progress</h2>
+      @defer (on viewport) {
+        <app-progress-charts [sessions]="sessions()" />
+      } @placeholder {
+        <div class="skeleton"></div>
+      } @loading (minimum 200ms) {
+        <div class="skeleton"></div>
+      }
+    </section>
+  }
+</div>

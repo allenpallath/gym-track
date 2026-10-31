@@ -1,0 +1,68 @@
+@use 'tokens';
+@use 'mixins';
+
+:root {
+  @include tokens.emit-tokens(tokens.$static-tokens);
+  @include tokens.emit-tokens(tokens.$theme-light);
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  @include tokens.emit-tokens(tokens.$theme-dark);
+  color-scheme: dark;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--gt-color-canvas);
+  color: var(--gt-color-ink);
+  font-family: var(--gt-font-body);
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+:focus-visible {
+  @include mixins.focus-ring;
+}
+
+input[type='search']::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+// CDK's content wrapper only sets min-width, so long nowrap text widens it and
+// pushes row actions off-screen. Pin it to the viewport width.
+.cdk-virtual-scroll-orientation-vertical .cdk-virtual-scroll-content-wrapper {
+  width: 100%;
+}

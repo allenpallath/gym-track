@@ -1,0 +1,45 @@
+:host {
+  display: block;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+
+  app-stat + app-stat {
+    padding-left: 12px;
+    border-left: 1px solid var(--gt-color-line);
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  h2 {
+    margin: 8px 0 0;
+  }
+}
+
+.skeleton {
+  height: 300px;
+  border-radius: var(--gt-radius-xl);
+  background: linear-gradient(90deg, var(--gt-color-surface) 25%, var(--gt-color-surface-muted) 50%, var(--gt-color-surface) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}

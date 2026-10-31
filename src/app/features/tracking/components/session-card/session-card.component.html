@@ -1,0 +1,43 @@
+@let s = session();
+
+<button type="button" class="summary" [attr.aria-expanded]="expanded()" (click)="toggled.emit()">
+  <div class="title-row">
+    <div class="titles">
+      <h3>{{ s.routineName }}</h3>
+      <p class="caption">{{ s.startedAt | date: 'EEE d MMM · HH:mm' }}</p>
+    </div>
+    <lucide-icon class="chevron" [img]="icons.ChevronDown" [size]="20" />
+  </div>
+  <dl class="metrics">
+    <div><dt>Time</dt><dd>{{ s.durationSec | duration }}</dd></div>
+    <div><dt>Sets</dt><dd>{{ s.totalSets }}</dd></div>
+    <div><dt>Volume</dt><dd>{{ s.totalVolume | volume }}</dd></div>
+  </dl>
+</button>
+
+@if (expanded()) {
+  <div class="details" animate.enter="fade-in">
+    @for (entry of s.exercises; track entry.id) {
+      <div class="exercise">
+        <img appImgFallback class="thumb" width="44" height="44" loading="lazy" [src]="entry.image | exerciseImage" alt="" />
+        <div class="exercise-body">
+          <h4>{{ entry.exerciseName }}</h4>
+          <ol class="sets">
+            @for (set of entry.sets; track set.id; let i = $index) {
+              <li [class.done]="set.completed">
+                <span class="set-no">{{ i + 1 }}</span>
+                {{ set.weight ?? '–' }} kg × {{ set.reps ?? '–' }}
+              </li>
+            }
+          </ol>
+        </div>
+      </div>
+    } @empty {
+      <p class="caption">No exercises logged.</p>
+    }
+    <button appButton variant="danger" size="sm" type="button" class="delete" (click)="deleted.emit()">
+      <lucide-icon [img]="icons.Trash2" [size]="16" />
+      Delete session
+    </button>
+  </div>
+}

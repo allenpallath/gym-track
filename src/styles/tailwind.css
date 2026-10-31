@@ -1,0 +1,45 @@
+/*
+ * Tailwind v4 entry. Kept as plain CSS (not SCSS) because Sass would try to
+ * resolve `@import "tailwindcss"` itself.
+ *
+ * Theme values point at the CSS custom properties from `_tokens.scss`, so
+ * utilities like `bg-surface` / `text-ink` follow the active theme
+ * automatically when `[data-theme="dark"]` is set on <html>.
+ */
+@import "tailwindcss";
+
+@source "../app";
+
+/* Dark mode variant driven by the data-theme attribute instead of the OS setting. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme inline {
+  --font-display: var(--gt-font-display);
+  --font-sans: var(--gt-font-body);
+
+  --color-canvas: var(--gt-color-canvas);
+  --color-surface: var(--gt-color-surface);
+  --color-surface-muted: var(--gt-color-surface-muted);
+  --color-ink: var(--gt-color-ink);
+  --color-ink-soft: var(--gt-color-ink-soft);
+  --color-muted: var(--gt-color-muted);
+  --color-subtle: var(--gt-color-subtle);
+  --color-line: var(--gt-color-line);
+
+  --color-pink: var(--gt-color-pink);
+  --color-pink-soft: var(--gt-color-pink-soft);
+  --color-pink-strong: var(--gt-color-pink-strong);
+  --color-lime: var(--gt-color-lime);
+  --color-lime-soft: var(--gt-color-lime-soft);
+  --color-lime-strong: var(--gt-color-lime-strong);
+  --color-danger: var(--gt-color-danger);
+
+  --radius-sm: var(--gt-radius-sm);
+  --radius-md: var(--gt-radius-md);
+  --radius-lg: var(--gt-radius-lg);
+  --radius-xl: var(--gt-radius-xl);
+  --radius-2xl: var(--gt-radius-2xl);
+
+  --shadow-card: var(--gt-shadow-card);
+  --shadow-float: var(--gt-shadow-float);
+}

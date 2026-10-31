@@ -1,0 +1,37 @@
+:host {
+  display: block;
+  border-radius: var(--gt-radius-xl);
+  overflow: hidden;
+}
+
+:host(.card--surface) {
+  background: var(--gt-color-surface);
+  box-shadow: var(--gt-shadow-card);
+}
+:host(.card--muted) {
+  background: var(--gt-color-surface-muted);
+}
+:host(.card--dark) {
+  background: var(--gt-color-ink);
+  color: var(--gt-color-surface);
+}
+:host(.card--lime) {
+  background: var(--gt-color-lime);
+  color: #111;
+}
+:host(.card--pink) {
+  background: var(--gt-color-pink-soft);
+}
+
+:host(.card-pad--none) {
+  padding: 0;
+}
+:host(.card-pad--sm) {
+  padding: 12px;
+}
+:host(.card-pad--md) {
+  padding: 18px;
+}
+:host(.card-pad--lg) {
+  padding: 24px;
+}

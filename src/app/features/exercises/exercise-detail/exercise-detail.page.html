@@ -1,0 +1,97 @@
+<div class="page">
+  @if (exercise(); as ex) {
+    <app-page-header [title]="ex.name" [subtitle]="subtitle()" [back]="true" />
+
+    <div class="hero">
+      <img appImgFallback class="frame" loading="lazy" [src]="ex.images[0] | exerciseImage" [alt]="ex.name + ' start position'" />
+      @if (ex.images[1]) {
+        <img appImgFallback class="frame frame--alt" loading="lazy" [src]="ex.images[1] | exerciseImage" [alt]="ex.name + ' end position'" />
+      }
+    </div>
+
+    <section class="block">
+      <div class="chip-row wrap">
+        @for (tag of tags(); track tag) {
+          <span appChip small>{{ tag }}</span>
+        }
+      </div>
+    </section>
+
+    <section class="block surface-card">
+      <h2 class="display-heading">Muscles</h2>
+      <p class="label">Primary</p>
+      <div class="chip-row wrap">
+        @for (m of ex.primaryMuscles; track m) {
+          <span appChip tone="pink">{{ m }}</span>
+        }
+      </div>
+      @if (ex.secondaryMuscles.length) {
+        <p class="label">Secondary</p>
+        <div class="chip-row wrap">
+          @for (m of ex.secondaryMuscles; track m) {
+            <span appChip tone="lime">{{ m }}</span>
+          }
+        </div>
+      }
+    </section>
+
+    <section class="block surface-card">
+      <h2 class="display-heading">How to do it</h2>
+      <ol class="steps">
+        @for (step of ex.instructions; track $index) {
+          <li>
+            <span class="step-num">{{ $index + 1 }}</span>
+            <p>{{ step }}</p>
+          </li>
+        }
+      </ol>
+    </section>
+
+    <div class="action-bar" [class.action-bar--raised]="activeSession.isActive()">
+      <button appButton variant="accent" size="lg" block type="button" (click)="openSheet()">
+        <lucide-icon [img]="icons.Plus" [size]="20" />
+        Add to routine
+      </button>
+    </div>
+
+    @if (sheetOpen()) {
+      <app-bottom-sheet title="Add to routine" (closed)="sheetOpen.set(false)">
+        @if (routines().length) {
+          <ul class="routine-list">
+            @for (r of routines(); track r.id) {
+              <li class="routine-row">
+                <div class="routine-info">
+                  <span class="routine-name">{{ r.name }}</span>
+                  <span class="caption">{{ r.exercises.length }} exercises</span>
+                </div>
+                @if (addedRoutineIds().has(r.id)) {
+                  <button appButton variant="accent" size="sm" type="button" disabled>
+                    <lucide-icon [img]="icons.Check" [size]="16" /> Added
+                  </button>
+                } @else {
+                  <button appButton variant="primary" size="sm" type="button" [disabled]="savingId() === r.id" (click)="addTo(r)">
+                    <lucide-icon [img]="icons.Plus" [size]="16" /> Add
+                  </button>
+                }
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="caption empty-msg">You don't have any routines yet.</p>
+        }
+        <button appButton variant="outline" block type="button" class="new-routine" [disabled]="creating()" (click)="createRoutine()">
+          New routine with this exercise
+        </button>
+      </app-bottom-sheet>
+    }
+  } @else if (status() === 'ready' || status() === 'error') {
+    <app-page-header title="Exercise" [back]="true" />
+    <app-empty-state title="Exercise not found" message="It may have been removed from the library." [icon]="icons.SearchX">
+      <a appButton variant="primary" routerLink="/exercises">Browse exercises</a>
+    </app-empty-state>
+  } @else {
+    <app-page-header title="Exercise" [back]="true" />
+    <div class="hero skeleton"></div>
+    <p class="caption">Loading exercise…</p>
+  }
+</div>

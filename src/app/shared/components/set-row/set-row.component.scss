@@ -1,0 +1,71 @@
+:host {
+  display: grid;
+  grid-template-columns: 32px 1fr 1fr 32px;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: var(--gt-radius-md);
+  transition: background-color 160ms ease;
+}
+
+:host(.log) {
+  grid-template-columns: 32px 1fr 1fr 40px 32px;
+}
+
+:host(.done) {
+  background: var(--gt-color-lime-soft);
+}
+
+.badge {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--gt-color-surface-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.num {
+  height: 40px;
+  padding: 0 8px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  background: var(--gt-color-surface-muted);
+  border-color: transparent;
+}
+
+.check,
+.remove {
+  display: grid;
+  place-items: center;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+}
+
+.check {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--gt-color-surface-muted);
+  color: var(--gt-color-subtle);
+}
+
+.check--done {
+  background: var(--gt-color-lime);
+  color: #111;
+}
+
+.remove {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--gt-color-subtle);
+
+  &:hover {
+    color: var(--gt-color-danger);
+  }
+}

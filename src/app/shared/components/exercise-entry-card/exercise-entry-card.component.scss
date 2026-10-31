@@ -1,0 +1,115 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 12px 8px;
+  background: var(--gt-color-surface);
+  border-radius: var(--gt-radius-xl);
+  box-shadow: var(--gt-shadow-card);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 4px 8px;
+}
+
+.thumb {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--gt-radius-sm);
+  object-fit: cover;
+  background: var(--gt-color-surface-muted);
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  color: var(--gt-color-ink);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menu {
+  position: relative;
+}
+
+.menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+}
+
+.menu-panel {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  min-width: 160px;
+  padding: 6px;
+  background: var(--gt-color-surface);
+  border-radius: var(--gt-radius-md);
+  box-shadow: var(--gt-shadow-float);
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    border: 0;
+    border-radius: var(--gt-radius-sm);
+    background: transparent;
+    color: var(--gt-color-ink);
+    font: inherit;
+    font-size: 0.9rem;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover:not([disabled]) {
+      background: var(--gt-color-surface-muted);
+    }
+
+    &[disabled] {
+      opacity: 0.35;
+      cursor: default;
+    }
+  }
+
+  .danger {
+    color: var(--gt-color-danger);
+  }
+}
+
+// Mirrors app-set-row's grid so headers line up.
+.cols {
+  display: grid;
+  grid-template-columns: 32px 1fr 1fr 32px;
+  gap: 8px;
+  padding: 0 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gt-color-muted);
+  text-align: center;
+}
+
+.cols--log {
+  grid-template-columns: 32px 1fr 1fr 40px 32px;
+}
+
+.no-sets {
+  margin: 4px 6px;
+}
+
+.add-set {
+  align-self: flex-start;
+  margin-top: 2px;
+}

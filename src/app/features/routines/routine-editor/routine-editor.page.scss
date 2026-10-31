@@ -1,0 +1,54 @@
+// Nav is hidden on this route, so reserve space for the sticky save bar instead.
+.editor {
+  padding-bottom: calc(110px + env(safe-area-inset-bottom));
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  background: var(--gt-color-surface);
+  border-radius: var(--gt-radius-xl);
+  box-shadow: var(--gt-shadow-card);
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 24px 0 12px;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+.entries {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.add {
+  margin-top: 14px;
+}
+
+.save-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  display: flex;
+  gap: 10px;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--gt-color-canvas) 70%, transparent);
+  box-sizing: border-box;
+
+  .save {
+    flex: 1;
+  }
+}

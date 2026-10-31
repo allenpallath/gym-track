@@ -1,0 +1,70 @@
+@if (draft(); as d) {
+  <header class="top">
+    <div class="top-row">
+      <a appButton variant="outline" iconOnly routerLink="/home" aria-label="Back to home (workout keeps running)">
+        <lucide-icon [img]="icons.ChevronLeft" [size]="20" />
+      </a>
+      <div class="title">
+        <span class="caption">Workout in progress</span>
+        <h1 class="display-heading">{{ d.routineName }}</h1>
+      </div>
+    </div>
+    <div class="timer-row">
+      <span class="timer" role="timer" aria-live="off">
+        <lucide-icon [img]="icons.Timer" [size]="22" />
+        {{ elapsedSec() | duration: 'clock' }}
+      </span>
+      <div class="mini-stats">
+        <span><strong>{{ totals().sets }}</strong>/{{ plannedSets() }} sets</span>
+        <span><strong>{{ totals().volume | volume }}</strong></span>
+      </div>
+    </div>
+  </header>
+
+  <div class="page body">
+    <div class="entries">
+      @for (entry of d.exercises; track entry.id; let first = $first, last = $last) {
+        <app-exercise-entry-card
+          [entry]="entry"
+          mode="log"
+          [isFirst]="first"
+          [isLast]="last"
+          (setChanged)="onSetChanged(entry.id, $event)"
+          (setAdded)="onSetAdded(entry.id)"
+          (setRemoved)="onSetRemoved(entry.id, $event)"
+          (moved)="onMoved(entry.id, $event)"
+          (removed)="onRemoved(entry.id)"
+        />
+      } @empty {
+        <app-empty-state title="Empty workout" message="Add the exercises you're doing as you go." [icon]="icons.Dumbbell" />
+      }
+    </div>
+
+    <button appButton variant="outline" block type="button" class="add" (click)="pickerOpen.set(true)">
+      <lucide-icon [img]="icons.Plus" [size]="18" /> Add exercise
+    </button>
+  </div>
+
+  <footer class="bottom-bar">
+    <button appButton variant="danger" size="lg" type="button" (click)="discard()">Discard</button>
+    <button appButton variant="accent" size="lg" type="button" class="finish" [disabled]="finishing()" (click)="finish()">
+      <lucide-icon [img]="icons.Flag" [size]="18" /> {{ finishing() ? 'Saving…' : 'Finish workout' }}
+    </button>
+  </footer>
+
+  @if (pickerOpen()) {
+    <app-exercise-picker [addedIds]="addedIds()" (added)="addExercise($event)" (closed)="pickerOpen.set(false)" />
+  }
+} @else {
+  <div class="page">
+    <div class="no-session">
+      <app-empty-state title="No workout running" message="Start one from a routine, or log a freestyle workout." [icon]="icons.Timer">
+        <div class="cta">
+          <a appButton variant="primary" routerLink="/routines">Choose a routine</a>
+          <button appButton variant="accent" type="button" (click)="startEmpty()">Start empty workout</button>
+        </div>
+      </app-empty-state>
+      <a appButton variant="ghost" routerLink="/home">Back to home</a>
+    </div>
+  </div>
+}

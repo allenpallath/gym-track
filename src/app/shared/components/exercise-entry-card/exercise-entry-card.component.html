@@ -1,0 +1,58 @@
+<header class="head">
+  <img appImgFallback class="thumb" width="48" height="48" loading="lazy" [src]="entry().image | exerciseImage" alt="" />
+  <a class="name" [routerLink]="['/exercises', entry().exerciseId]">{{ entry().exerciseName }}</a>
+  <div class="menu">
+    <button
+      appButton
+      variant="ghost"
+      size="sm"
+      iconOnly
+      type="button"
+      aria-label="Exercise options"
+      [attr.aria-expanded]="menuOpen()"
+      (click)="menuOpen.set(!menuOpen())"
+    >
+      <lucide-icon [img]="icons.EllipsisVertical" [size]="18" />
+    </button>
+    @if (menuOpen()) {
+      <div class="menu-backdrop" (click)="menuOpen.set(false)"></div>
+      <div class="menu-panel" role="menu" animate.enter="fade-in">
+        <button type="button" role="menuitem" [disabled]="isFirst()" (click)="move(-1)">
+          <lucide-icon [img]="icons.ArrowUp" [size]="16" /> Move up
+        </button>
+        <button type="button" role="menuitem" [disabled]="isLast()" (click)="move(1)">
+          <lucide-icon [img]="icons.ArrowDown" [size]="16" /> Move down
+        </button>
+        <button type="button" role="menuitem" class="danger" (click)="remove()">
+          <lucide-icon [img]="icons.Trash2" [size]="16" /> Remove
+        </button>
+      </div>
+    }
+  </div>
+</header>
+
+<div class="cols" [class.cols--log]="mode() === 'log'">
+  <span>Set</span>
+  <span>Kg</span>
+  <span>Reps</span>
+  @if (mode() === 'log') {
+    <span>✓</span>
+  }
+  <span></span>
+</div>
+
+@for (set of entry().sets; track set.id; let i = $index) {
+  <app-set-row
+    [index]="i + 1"
+    [set]="set"
+    [mode]="mode()"
+    (changed)="setChanged.emit({ setId: set.id, patch: $event })"
+    (removed)="setRemoved.emit(set.id)"
+  />
+} @empty {
+  <p class="caption no-sets">No sets yet.</p>
+}
+
+<button appButton variant="ghost" size="sm" type="button" class="add-set" (click)="setAdded.emit()">
+  <lucide-icon [img]="icons.Plus" [size]="16" /> Add set
+</button>

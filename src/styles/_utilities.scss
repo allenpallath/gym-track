@@ -1,0 +1,110 @@
+@use 'mixins';
+
+// Reusable global classes. Prefer these (or Tailwind utilities) over
+// re-declaring the same look in component stylesheets.
+
+.page {
+  padding: 8px var(--gt-space-page) calc(var(--gt-nav-height) + 40px + env(safe-area-inset-bottom));
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.display-heading {
+  @include mixins.display-heading;
+}
+
+.display-heading--lg {
+  @include mixins.display-heading(2.25rem);
+}
+
+.display-number {
+  font-family: var(--gt-font-display);
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.caption {
+  font-size: 0.85rem;
+  color: var(--gt-color-muted);
+}
+
+.surface-card {
+  @include mixins.card;
+}
+
+.hide-scrollbar {
+  @include mixins.hide-scrollbar;
+}
+
+.line-clamp-2 {
+  @include mixins.line-clamp(2);
+}
+
+.chip-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  @include mixins.hide-scrollbar;
+}
+
+// Shared look for text/number inputs (used by app-text-field and set rows).
+.field-input {
+  width: 100%;
+  height: 44px;
+  border: 1px solid var(--gt-color-line);
+  border-radius: var(--gt-radius-md);
+  background: var(--gt-color-surface);
+  color: var(--gt-color-ink);
+  padding: 0 14px;
+  font: inherit;
+  font-size: 16px; // >=16px prevents iOS zoom on focus
+
+  &::placeholder {
+    color: var(--gt-color-subtle);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--gt-color-ink);
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+// Built-in Angular `animate.enter` / `animate.leave` classes.
+.fade-in {
+  animation: gt-fade-in 180ms ease-out;
+}
+
+.fade-out {
+  animation: gt-fade-in 140ms ease-in reverse;
+}
+
+.slide-up-in {
+  animation: gt-slide-up 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.slide-up-out {
+  animation: gt-slide-up 180ms ease-in reverse;
+}
+
+@keyframes gt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes gt-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+}

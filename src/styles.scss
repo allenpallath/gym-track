@@ -1,0 +1,4 @@
+// Global stylesheet. Tailwind itself is loaded from `styles/tailwind.css`
+// (listed before this file in angular.json).
+@use 'base';
+@use 'utilities';

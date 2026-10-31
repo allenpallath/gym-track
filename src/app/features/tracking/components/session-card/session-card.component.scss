@@ -1,0 +1,146 @@
+:host {
+  display: block;
+  background: var(--gt-color-surface);
+  border-radius: var(--gt-radius-xl);
+  box-shadow: var(--gt-shadow-card);
+  overflow: hidden;
+  scroll-margin-top: 16px;
+}
+
+.summary {
+  display: block;
+  width: 100%;
+  padding: 16px 18px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.titles {
+  flex: 1;
+  min-width: 0;
+
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 2px 0 0;
+  }
+}
+
+.chevron {
+  color: var(--gt-color-muted);
+  transition: transform 200ms ease;
+}
+
+:host(.expanded) .chevron {
+  transform: rotate(180deg);
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 14px 0 0;
+
+  div + div {
+    padding-left: 12px;
+    border-left: 1px solid var(--gt-color-line);
+  }
+
+  dt {
+    font-size: 0.75rem;
+    color: var(--gt-color-muted);
+  }
+
+  dd {
+    margin: 2px 0 0;
+    font-family: var(--gt-font-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+  }
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 18px 18px;
+  border-top: 1px solid var(--gt-color-line);
+  padding-top: 16px;
+}
+
+.exercise {
+  display: flex;
+  gap: 12px;
+}
+
+.thumb {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.exercise-body {
+  flex: 1;
+  min-width: 0;
+
+  h4 {
+    margin: 0 0 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+}
+
+.sets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px 4px 4px;
+    border-radius: 999px;
+    background: var(--gt-color-surface-muted);
+    color: var(--gt-color-muted);
+    font-size: 0.78rem;
+  }
+
+  li.done {
+    background: var(--gt-color-lime-soft);
+    color: var(--gt-color-ink);
+    font-weight: 600;
+  }
+}
+
+.set-no {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--gt-color-surface);
+  font-size: 0.7rem;
+}
+
+.delete {
+  align-self: flex-start;
+}

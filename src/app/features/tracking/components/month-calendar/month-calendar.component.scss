@@ -1,0 +1,78 @@
+:host {
+  display: block;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+.nav {
+  display: flex;
+  gap: 6px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  justify-items: center;
+}
+
+.weekday {
+  padding-bottom: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--gt-color-subtle);
+}
+
+.day {
+  position: relative;
+  width: 100%;
+  max-width: 44px;
+  aspect-ratio: 1;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--gt-color-ink);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.day--out {
+  color: var(--gt-color-subtle);
+}
+
+.day--active {
+  background: var(--gt-color-lime);
+  color: #111;
+  font-weight: 700;
+}
+
+.day--today {
+  border-color: var(--gt-color-pink);
+}
+
+.day--selected {
+  background: var(--gt-color-ink);
+  color: var(--gt-color-surface);
+}
+
+.multi {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gt-color-pink-strong);
+}

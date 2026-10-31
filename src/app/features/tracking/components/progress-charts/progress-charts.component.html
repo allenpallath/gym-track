@@ -1,0 +1,35 @@
+<app-card padding="lg">
+  <h2 class="display-heading">Weekly volume</h2>
+  <p class="caption">Last {{ volumeData().labels?.length }} weeks · completed sets</p>
+  <div class="chart">
+    <canvas baseChart type="bar" [data]="volumeData()" [options]="barOptions"></canvas>
+  </div>
+</app-card>
+
+<app-card padding="lg">
+  <div class="head">
+    <div>
+      <h2 class="display-heading">Exercise progress</h2>
+      <p class="caption">Heaviest completed set per session</p>
+    </div>
+  </div>
+
+  @if (exercises().length) {
+    <label class="sr-only" for="progress-exercise">Exercise</label>
+    <select id="progress-exercise" class="field-input select" [value]="selectedExerciseId()" (change)="onExerciseChange($event)">
+      @for (e of exercises(); track e.id) {
+        <option [value]="e.id" [selected]="e.id === selectedExerciseId()">{{ e.name }}</option>
+      }
+    </select>
+
+    @if (progressPoints().length) {
+      <div class="chart">
+        <canvas baseChart type="line" [data]="progressData()" [options]="lineOptions"></canvas>
+      </div>
+    } @else {
+      <p class="caption empty">No weighted sets logged for this exercise yet.</p>
+    }
+  } @else {
+    <p class="caption empty">Complete a few sets in a workout to see your progress here.</p>
+  }
+</app-card>

@@ -1,0 +1,26 @@
+<h2 class="display-heading">Training breakdown</h2>
+<p class="caption">Last 7 days</p>
+
+<div class="bars" role="list">
+  @for (bar of bars(); track bar.key) {
+    <div class="col" role="listitem" [attr.aria-label]="bar.letter + ': ' + bar.minutes + ' minutes'">
+      <div class="track">
+        @if (bar.isToday) {
+          <span class="tip" [style.bottom.%]="bar.height">{{ bar.minutes }} min</span>
+        }
+        <div [class]="'fill fill--' + bar.tone" [style.height.%]="bar.height"></div>
+      </div>
+      <span class="letter" [class.letter--today]="bar.isToday">{{ bar.letter }}</span>
+    </div>
+  }
+</div>
+
+<div class="rail" aria-hidden="true">
+  <span class="rail-dot" [style.left]="'calc(' + (todayIndex + 0.5) + ' * 100% / 7)'"></span>
+</div>
+
+<div class="stats">
+  <app-stat label="Total load" [value]="week().time" unit="this week" />
+  <app-stat label="Sessions" [value]="week().count" unit="this week" />
+  <app-stat label="Volume" [value]="week().volume" [unit]="week().volumeUnit" />
+</div>

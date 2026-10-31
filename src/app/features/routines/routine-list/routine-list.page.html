@@ -1,0 +1,62 @@
+<div class="page">
+  <app-page-header title="Routines" subtitle="Plan once, train often">
+    <a actions appButton variant="primary" size="sm" routerLink="/routines/new">
+      <lucide-icon [img]="icons.Plus" [size]="16" /> New
+    </a>
+  </app-page-header>
+
+  <button appButton variant="outline" block type="button" class="quick" (click)="quickStart()">
+    <lucide-icon [img]="icons.Zap" [size]="18" /> Quick workout
+  </button>
+
+  @if (loaded()) {
+    <div class="list">
+      @for (card of cards(); track card.routine.id) {
+        <article class="routine">
+          <a class="body" [routerLink]="['/routines', card.routine.id]">
+            <div class="thumbs">
+              @for (thumb of card.thumbs; track $index) {
+                <img appImgFallback loading="lazy" width="44" height="44" [src]="thumb | exerciseImage" alt="" />
+              } @empty {
+                <span class="thumb-empty"><lucide-icon [img]="icons.ListChecks" [size]="18" /></span>
+              }
+            </div>
+            <h2 class="display-heading">{{ card.routine.name }}</h2>
+            <p class="caption">{{ card.exerciseCount }} exercises · {{ card.setCount }} sets</p>
+            <p class="caption last">
+              Last performed:
+              @if (card.routine.lastPerformedAt) {
+                {{ card.routine.lastPerformedAt | date: 'MMM d, y' }}
+              } @else {
+                Never
+              }
+            </p>
+          </a>
+          <div class="actions">
+            <button appButton variant="accent" size="sm" type="button" (click)="start(card.routine)">
+              <lucide-icon [img]="icons.Play" [size]="16" /> Start
+            </button>
+            <a appButton variant="outline" size="sm" iconOnly aria-label="Edit routine" [routerLink]="['/routines', card.routine.id]">
+              <lucide-icon [img]="icons.Pencil" [size]="16" />
+            </a>
+            <button appButton variant="ghost" size="sm" iconOnly type="button" aria-label="Delete routine" (click)="remove(card.routine)">
+              <lucide-icon [img]="icons.Trash2" [size]="16" />
+            </button>
+          </div>
+        </article>
+      } @empty {
+        <app-empty-state
+          title="No routines yet"
+          message="Build your first routine and start a workout from it in one tap."
+          [icon]="icons.ListChecks"
+        >
+          <a appButton variant="accent" routerLink="/routines/new">
+            <lucide-icon [img]="icons.Plus" [size]="16" /> Create routine
+          </a>
+        </app-empty-state>
+      }
+    </div>
+  } @else {
+    <p class="caption">Loading routines…</p>
+  }
+</div>

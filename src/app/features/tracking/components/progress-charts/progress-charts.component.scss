@@ -1,0 +1,44 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+
+  // Flex items default to min-width:auto, so the canvas's own width would stop
+  // the cards from shrinking when the viewport narrows.
+  > * {
+    min-width: 0;
+  }
+}
+
+h2,
+p {
+  margin: 0;
+}
+
+.caption {
+  margin-top: 4px;
+}
+
+.chart {
+  position: relative;
+  height: 220px;
+  margin-top: 16px;
+  min-width: 0;
+  overflow: hidden;
+
+  canvas {
+    max-width: 100%;
+  }
+}
+
+.select {
+  margin-top: 14px;
+  border-radius: 999px;
+  appearance: auto;
+}
+
+.empty {
+  padding: 28px 0 8px;
+  text-align: center;
+}

@@ -1,0 +1,73 @@
+// Design tokens. SCSS maps are the single source of truth; they are emitted as
+// CSS custom properties (`--gt-*`) so Tailwind (`tailwind.css`) and component
+// SCSS both read the same values at runtime.
+//
+// Dark mode: `$theme-dark` is already emitted under `[data-theme='dark']`.
+// To enable it later just set `document.documentElement.dataset.theme = 'dark'`.
+
+$theme-light: (
+  color-canvas: #ececec,
+  color-surface: #ffffff,
+  color-surface-muted: #f3f3f4,
+  color-ink: #111111,
+  color-ink-soft: #2a2a2a,
+  color-muted: #77787c,
+  color-subtle: #a6a7ab,
+  color-line: #e4e4e7,
+  color-pink: #e27ad6,
+  color-pink-soft: #fbe6f8,
+  color-pink-strong: #b9439f,
+  color-lime: #c9e85f,
+  color-lime-soft: #eef8cf,
+  color-lime-strong: #6f8f12,
+  color-danger: #e5484d,
+  shadow-card: (0 1px 2px rgb(17 17 17 / 0.04), 0 8px 24px rgb(17 17 17 / 0.04)),
+  shadow-float: 0 12px 32px rgb(17 17 17 / 0.12),
+);
+
+$theme-dark: (
+  color-canvas: #0b0b0c,
+  color-surface: #18181a,
+  color-surface-muted: #222225,
+  color-ink: #f4f4f5,
+  color-ink-soft: #d4d4d8,
+  color-muted: #9b9ca1,
+  color-subtle: #6b6c71,
+  color-line: #2c2c30,
+  color-pink: #e88ade,
+  color-pink-soft: #3a2036,
+  color-pink-strong: #f2a8ea,
+  color-lime: #c9e85f,
+  color-lime-soft: #2c3416,
+  color-lime-strong: #d7f080,
+  color-danger: #ff6b6f,
+  shadow-card: 0 1px 2px rgb(0 0 0 / 0.5),
+  shadow-float: 0 12px 32px rgb(0 0 0 / 0.6),
+);
+
+// Theme-independent tokens.
+$static-tokens: (
+  font-display: ('Barlow Condensed', 'Arial Narrow', sans-serif),
+  font-body: ('Inter', system-ui, -apple-system, 'Segoe UI', sans-serif),
+  radius-sm: 10px,
+  radius-md: 14px,
+  radius-lg: 20px,
+  radius-xl: 28px,
+  radius-2xl: 36px,
+  space-page: 16px,
+  nav-height: 72px,
+  header-height: 64px,
+);
+
+// Breakpoints used by the `respond` mixin (mobile-first, min-width).
+$breakpoints: (
+  sm: 640px,
+  md: 768px,
+  lg: 1024px,
+);
+
+@mixin emit-tokens($map) {
+  @each $name, $value in $map {
+    --gt-#{$name}: #{$value};
+  }
+}

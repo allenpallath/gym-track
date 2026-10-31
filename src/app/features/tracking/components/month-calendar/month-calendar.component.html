@@ -1,0 +1,35 @@
+<header class="head">
+  <h2 class="display-heading">{{ title() }}</h2>
+  <div class="nav">
+    <button appButton variant="outline" size="sm" iconOnly type="button" aria-label="Previous month" (click)="monthChange.emit(-1)">
+      <lucide-icon [img]="icons.ChevronLeft" [size]="18" />
+    </button>
+    <button appButton variant="outline" size="sm" iconOnly type="button" aria-label="Next month" (click)="monthChange.emit(1)">
+      <lucide-icon [img]="icons.ChevronRight" [size]="18" />
+    </button>
+  </div>
+</header>
+
+<div class="grid" role="grid">
+  @for (w of weekdays; track $index) {
+    <span class="weekday" aria-hidden="true">{{ w }}</span>
+  }
+  @for (cell of cells(); track cell.key) {
+    <button
+      type="button"
+      class="day"
+      [class.day--out]="!cell.inMonth"
+      [class.day--active]="cell.count > 0"
+      [class.day--today]="cell.isToday"
+      [class.day--selected]="cell.isSelected"
+      [attr.aria-pressed]="cell.isSelected"
+      [attr.aria-label]="cell.key + (cell.count ? ', ' + cell.count + ' workout(s)' : '')"
+      (click)="daySelected.emit(cell.key)"
+    >
+      {{ cell.day }}
+      @if (cell.count > 1) {
+        <span class="multi"></span>
+      }
+    </button>
+  }
+</div>

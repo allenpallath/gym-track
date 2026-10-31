@@ -1,0 +1,86 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+  user-select: none;
+  transition:
+    transform 120ms ease,
+    background-color 160ms ease,
+    opacity 160ms ease;
+
+  &:active:not([disabled]) {
+    transform: scale(0.97);
+  }
+
+  &[disabled],
+  &[aria-disabled='true'] {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+// Sizes
+:host(.gt-btn--sm) {
+  height: 34px;
+  padding: 0 14px;
+  font-size: 0.85rem;
+}
+:host(.gt-btn--md) {
+  height: 44px;
+  padding: 0 20px;
+  font-size: 0.95rem;
+}
+:host(.gt-btn--lg) {
+  height: 54px;
+  padding: 0 26px;
+  font-size: 1.05rem;
+}
+:host(.gt-btn--block) {
+  display: flex;
+  width: 100%;
+}
+:host(.gt-btn--icon) {
+  padding: 0;
+  aspect-ratio: 1;
+}
+
+// Variants
+:host(.gt-btn--primary) {
+  background: var(--gt-color-ink);
+  color: var(--gt-color-surface);
+}
+:host(.gt-btn--accent) {
+  background: var(--gt-color-lime);
+  color: #111;
+}
+:host(.gt-btn--pink) {
+  background: var(--gt-color-pink);
+  color: #111;
+}
+:host(.gt-btn--outline) {
+  background: var(--gt-color-surface);
+  color: var(--gt-color-ink);
+  border-color: var(--gt-color-line);
+}
+:host(.gt-btn--ghost) {
+  background: transparent;
+  color: var(--gt-color-ink);
+
+  &:hover:not([disabled]) {
+    background: var(--gt-color-surface-muted);
+  }
+}
+:host(.gt-btn--danger) {
+  background: transparent;
+  color: var(--gt-color-danger);
+  border-color: currentColor;
+}

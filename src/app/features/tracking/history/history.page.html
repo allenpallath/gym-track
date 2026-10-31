@@ -8,7 +8,7 @@
       <a appButton variant="accent" routerLink="/routines">Pick a routine</a>
     </app-empty-state>
   } @else {
-    <app-card padding="lg" class="stats">
+    <app-card padding="lg">
       <span class="caption">This {{ monthLabel() }}</span>
       <div class="stat-row">
         <app-stat label="Sessions" [value]="monthStats().count" unit="workouts" />

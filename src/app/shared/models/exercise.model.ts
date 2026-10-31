@@ -35,7 +35,7 @@ export const EQUIPMENT_TYPES = [
   'other',
 ] as const;
 
-export const EXERCISE_CATEGORIES = [
+const EXERCISE_CATEGORIES = [
   'strength',
   'stretching',
   'plyometrics',
@@ -74,5 +74,4 @@ export interface ExerciseFilters {
   muscle: MuscleGroup | null;
   equipment: Equipment | null;
   level: ExerciseLevel | null;
-  category: ExerciseCategory | null;
 }

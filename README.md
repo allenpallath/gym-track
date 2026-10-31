@@ -52,9 +52,9 @@ src/
     │   ├── state/                   # signal stores: exercise, routine, session, active session
     │   └── utils/                   # pure helpers: ids, dates, workout list editing/totals
     ├── shared/
-    │   ├── components/              # button, card, chip, page-header, text-field, stat,
-    │   │                            # bottom-sheet, empty-state, exercise-list, exercise-picker,
-    │   │                            # exercise-entry-card, set-row
+    │   ├── components/              # button, card, chip, page-header, text-field, search-field,
+    │   │                            # select, stat, bottom-sheet, confirm-dialog, empty-state,
+    │   │                            # exercise-list, exercise-picker, exercise-entry-card, set-row
     │   ├── directives/              # img-fallback
     │   ├── pipes/                   # duration, volume, exercise-image
     │   └── models/                  # Exercise, Routine, WorkoutSession, ExerciseEntry, WorkoutSet
@@ -107,7 +107,11 @@ All lime/pink accents (buttons, selected chips, active nav tab, checkmarks, cale
 }
 ```
 
-Or in templates: `<span class="jelly">…</span>` (lime). Charts get the same look via the Chart.js plugins in `features/tracking/components/progress-charts/jelly-chart.plugins.ts`. Cards get a soft white + lime glow from the `--gt-shadow-card` token.
+Or in templates: `<span class="jelly">…</span>` (lime). White surfaces (cards, outline buttons, search) use `jelly-surface`; `jelly-glow` adds a soft coloured glow (used on the live workout header).
+
+### App icons
+
+`public/favicon.svg` is the source icon (lime jelly square + dumbbell). PNGs (`favicon-32.png`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`) are rendered from it and referenced by `index.html` and `manifest.webmanifest`, so the app can be added to a phone's home screen. Charts get the same look via the Chart.js plugins in `features/tracking/components/progress-charts/jelly-chart.plugins.ts`. Cards get a soft white + lime glow from the `--gt-shadow-card` token.
 
 ### Dark mode (prepared, not enabled)
 
@@ -122,18 +126,26 @@ Tailwind's `dark:` variant is wired to the same attribute.
 ## Reusable components (examples)
 
 ```html
-<button appButton variant="accent" size="lg" block>Save</button>      <!-- primary | accent | pink | outline | ghost | danger -->
+<button appButton variant="accent" size="lg" block>Save</button>      <!-- primary | accent | pink (also destructive) | outline | ghost -->
 <a appButton variant="outline" routerLink="/routines">Routines</a>
 <button appChip [selected]="isActive">chest</button>
-<app-card variant="muted" padding="lg">…</app-card>
+<app-card padding="lg">…</app-card>
 <app-text-field label="Routine name" [(value)]="name" />
-<app-stat label="Total load" value="3H 40M" unit="this week" />
+<app-search-field placeholder="Search exercises" [(value)]="query" />
+<app-select ariaLabel="Exercise" [options]="options()" [(value)]="selectedId" searchable />
+<app-stat label="Time trained" value="3H 40M" unit="this week" />
 @if (open()) { <app-exercise-picker [addedIds]="ids()" (added)="add($event)" (closed)="open.set(false)" /> }
+```
+
+Confirmations never use `window.confirm()` — inject `ConfirmService`:
+
+```ts
+const ok = await this.confirm.ask({ title: 'Delete routine?', message: '…', confirmText: 'Delete', tone: 'danger' });
 ```
 
 ## Performance notes
 
-- All routes lazy-loaded; Chart.js only loads inside a `@defer (on viewport)` block on History.
+- All routes lazy-loaded; Chart.js only loads inside a `@defer (on viewport)` block on History, and the confirm dialog only loads the first time one is shown.
 - Zoneless change detection + `OnPush` everywhere; templates bind to signals / `computed()` / pure pipes — no method calls for derived data.
 - Exercise list uses CDK virtual scroll; search uses a pre-built lower-case index and a debounced query signal.
 - Images use `loading="lazy"` with an offline placeholder on error.

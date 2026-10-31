@@ -116,17 +116,17 @@ export class ProgressChartsComponent {
   protected readonly barPlugins = [jellyGlowPlugin<'bar'>(withAlpha(this.colors.lime, 0.55)), jellyBarsPlugin(BAR_RADIUS)];
   protected readonly linePlugins = [jellyGlowPlugin<'line'>(withAlpha(this.colors.pink, 0.45), 12)];
 
-  protected readonly barOptions: ChartConfiguration<'bar'>['options'] = this.baseOptions((v) => `${v} kg`);
-  protected readonly lineOptions: ChartConfiguration<'line'>['options'] = this.baseOptions((v) => `${v} kg`);
+  protected readonly barOptions: ChartConfiguration<'bar'>['options'] = this.baseOptions();
+  protected readonly lineOptions: ChartConfiguration<'line'>['options'] = this.baseOptions();
 
-  private baseOptions(format: (v: number) => string) {
+  private baseOptions() {
     const { muted, line } = this.colors;
     return {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
-        tooltip: { callbacks: { label: (ctx: { parsed: { y: number | null } }) => format(ctx.parsed.y ?? 0) } },
+        tooltip: { callbacks: { label: (ctx: { parsed: { y: number | null } }) => `${ctx.parsed.y ?? 0} kg` } },
       },
       scales: {
         x: { grid: { display: false }, border: { display: false }, ticks: { color: muted, font: { size: 11 } } },

@@ -5,16 +5,6 @@
   min-width: 0;
 }
 
-.label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--gt-color-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
 .trigger {
   display: flex;
   align-items: center;
@@ -24,7 +14,7 @@
   padding: 0 14px 0 18px;
   border: 1px solid var(--gt-color-line);
   border-radius: 999px;
-  background: var(--gt-color-surface);
+  @include mixins.jelly-surface($lifted: false);
   color: var(--gt-color-ink);
   font: inherit;
   font-size: 0.95rem;
@@ -35,13 +25,8 @@
     border-color 150ms ease,
     box-shadow 150ms ease;
 
-  &:hover:not(:disabled) {
+  &:hover {
     border-color: var(--gt-color-subtle);
-  }
-
-  &:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
   }
 }
 

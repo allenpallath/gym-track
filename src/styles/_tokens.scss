@@ -20,7 +20,6 @@ $theme-light: (
   color-lime: #c9e85f,
   color-lime-soft: #eef8cf,
   color-lime-strong: #6f8f12,
-  color-danger: #e5484d,
   shadow-card: (0 1px 2px rgb(17 17 17 / 0.04), 0 12px 28px -14px rgb(17 17 17 / 0.14)),
   shadow-float: 0 12px 32px rgb(17 17 17 / 0.12),
   // Jelly surfaces: bright top rim + soft inner shading (see `jelly-surface` mixin).
@@ -43,7 +42,6 @@ $theme-dark: (
   color-lime: #c9e85f,
   color-lime-soft: #2c3416,
   color-lime-strong: #d7f080,
-  color-danger: #ff6b6f,
   shadow-card: 0 1px 2px rgb(0 0 0 / 0.5),
   shadow-float: 0 12px 32px rgb(0 0 0 / 0.6),
   jelly-rim: rgb(255 255 255 / 0.08),
@@ -61,14 +59,11 @@ $static-tokens: (
   radius-2xl: 36px,
   space-page: 16px,
   nav-height: 72px,
-  header-height: 64px,
 );
 
 // Breakpoints used by the `respond` mixin (mobile-first, min-width).
 $breakpoints: (
-  sm: 640px,
   md: 768px,
-  lg: 1024px,
 );
 
 @mixin emit-tokens($map) {

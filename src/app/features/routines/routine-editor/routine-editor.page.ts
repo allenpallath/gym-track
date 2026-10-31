@@ -14,6 +14,8 @@ import {
 import { ExercisePickerComponent } from '@shared/components/exercise-picker/exercise-picker.component';
 import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { TextFieldComponent } from '@shared/components/text-field/text-field.component';
+import { ConfirmService } from '@shared/components/confirm-dialog/confirm.service';
+import { deleteRoutineDialog } from '../routine-dialogs';
 import { HasUnsavedChanges } from '../unsaved-changes.guard';
 
 /** Create (`/routines/new`) and edit (`/routines/:id`) a routine. */
@@ -37,6 +39,7 @@ export class RoutineEditorPage implements OnInit, HasUnsavedChanges {
   private readonly store = inject(RoutineStore);
   private readonly launcher = inject(SessionLauncherService);
   private readonly router = inject(Router);
+  private readonly confirm = inject(ConfirmService);
 
   /** Bound from the `:id` route param; undefined on `/routines/new`. */
   readonly id = input<string>();
@@ -127,8 +130,9 @@ export class RoutineEditorPage implements OnInit, HasUnsavedChanges {
 
   protected async delete(): Promise<void> {
     const routine = this.base();
-    if (!routine || !confirm(`Delete "${routine.name}"? This can't be undone.`)) return;
+    if (!routine || !(await this.confirm.ask(deleteRoutineDialog(routine.name)))) return;
     await this.store.delete(routine.id);
+    // Mark clean so the unsaved-changes guard doesn't prompt on the way out.
     this.savedSnapshot.set(this.snapshot());
     await this.router.navigateByUrl('/routines');
   }

@@ -34,7 +34,6 @@ import { DurationPipe } from '@shared/pipes/duration.pipe';
       max-width: 340px;
       padding: 10px 16px;
       border-radius: 999px;
-      color: #111;
       font-weight: 600;
       font-size: 0.85rem;
       text-decoration: none;

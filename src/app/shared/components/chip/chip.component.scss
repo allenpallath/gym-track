@@ -43,7 +43,6 @@
 :host(.chip--selected) {
   --jelly: var(--gt-color-lime);
   @include mixins.jelly($glow: false);
-  border-color: transparent;
   color: #111;
   font-weight: 600;
 }

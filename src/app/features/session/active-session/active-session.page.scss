@@ -1,23 +1,19 @@
+@use 'mixins';
+
 .top {
   position: sticky;
   top: 0;
   z-index: 20;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
   max-width: 720px;
   margin: 0 auto;
-  padding: calc(14px + env(safe-area-inset-top)) 16px 16px;
-  background: var(--gt-color-ink);
-  color: var(--gt-color-surface);
+  padding: calc(14px + env(safe-area-inset-top)) 16px 18px;
   border-radius: 0 0 var(--gt-radius-2xl) var(--gt-radius-2xl);
-
-  a[appButton] {
-    background: transparent;
-    box-shadow: none;
-    color: inherit;
-    border-color: rgb(255 255 255 / 0.2);
-  }
+  @include mixins.jelly-surface;
+  // Soft lime glow marks the screen as "live".
+  @include mixins.jelly-glow;
 }
 
 .top-row {
@@ -29,12 +25,8 @@
 .title {
   min-width: 0;
 
-  .caption {
-    color: var(--gt-color-lime);
-  }
-
   h1 {
-    margin: 2px 0 0;
+    margin: 6px 0 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -48,16 +40,55 @@
   gap: 12px;
 }
 
+.live-chip {
+  --jelly: var(--gt-color-lime);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  @include mixins.jelly(sm, $glow: false);
+  color: #111;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gt-color-pink-strong);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
 .timer {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   font-family: var(--gt-font-display);
   font-weight: 700;
   font-size: 3rem;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  color: var(--gt-color-lime);
+  color: var(--gt-color-ink);
+}
+
+.timer-icon {
+  --jelly: var(--gt-color-lime);
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  @include mixins.jelly;
+  color: #111;
 }
 
 .mini-stats {
@@ -66,10 +97,16 @@
   align-items: flex-end;
   gap: 2px;
   font-size: 0.82rem;
-  color: rgb(255 255 255 / 0.7);
+  color: var(--gt-color-muted);
 
   strong {
-    color: #fff;
+    color: var(--gt-color-ink);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot {
+    animation: none;
   }
 }
 

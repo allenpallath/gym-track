@@ -5,13 +5,13 @@
         <lucide-icon [img]="icons.ChevronLeft" [size]="20" />
       </a>
       <div class="title">
-        <span class="caption">Workout in progress</span>
-        <h1 class="display-heading">{{ d.routineName }}</h1>
+        <span class="live-chip"><span class="dot"></span>Workout in progress</span>
+        <h1 class="display-heading--lg">{{ d.routineName }}</h1>
       </div>
     </div>
     <div class="timer-row">
       <span class="timer" role="timer" aria-live="off">
-        <lucide-icon [img]="icons.Timer" [size]="22" />
+        <span class="timer-icon"><lucide-icon [img]="icons.Timer" [size]="20" /></span>
         {{ elapsedSec() | duration: 'clock' }}
       </span>
       <div class="mini-stats">

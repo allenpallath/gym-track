@@ -10,6 +10,7 @@ import {
   input,
   signal,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { LucideAngularModule, CalendarDays } from 'lucide-angular';
 import { SessionStore } from '@core/state/session.store';
 import { addMonths, startOfMonth, toDayKey } from '@core/utils/date.utils';
@@ -19,12 +20,12 @@ import { CardComponent } from '@shared/components/card/card.component';
 import { StatComponent } from '@shared/components/stat/stat.component';
 import { EmptyStateComponent } from '@shared/components/empty-state/empty-state.component';
 import { ButtonComponent } from '@shared/components/button/button.component';
+import { ConfirmService } from '@shared/components/confirm-dialog/confirm.service';
 import { DurationPipe } from '@shared/pipes/duration.pipe';
 import { VolumePipe } from '@shared/pipes/volume.pipe';
 import { MonthCalendarComponent } from '../components/month-calendar/month-calendar.component';
 import { SessionCardComponent } from '../components/session-card/session-card.component';
 import { ProgressChartsComponent } from '../components/progress-charts/progress-charts.component';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-history-page',
@@ -48,6 +49,7 @@ import { RouterLink } from '@angular/router';
 })
 export class HistoryPage {
   private readonly store = inject(SessionStore);
+  private readonly confirm = inject(ConfirmService);
   private readonly document = inject(DOCUMENT);
   private readonly injector = inject(Injector);
 
@@ -98,7 +100,7 @@ export class HistoryPage {
       const [y, m, d] = day.split('-').map(Number);
       return new Date(y, m - 1, d).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' });
     }
-    return this.viewMonth().toLocaleDateString(undefined, { month: 'long' }) + ' sessions';
+    return `${this.monthLabel()} sessions`;
   });
 
   protected readonly monthLabel = computed(() => this.viewMonth().toLocaleDateString(undefined, { month: 'long' }));
@@ -142,7 +144,13 @@ export class HistoryPage {
   }
 
   protected async deleteSession(session: WorkoutSession): Promise<void> {
-    if (!confirm(`Delete "${session.routineName}" session? This can't be undone.`)) return;
+    const ok = await this.confirm.ask({
+      title: 'Delete session?',
+      message: `"${session.routineName}" will be removed from your history. This can't be undone.`,
+      confirmText: 'Delete',
+      tone: 'danger',
+    });
+    if (!ok) return;
     await this.store.delete(session.id);
   }
 }

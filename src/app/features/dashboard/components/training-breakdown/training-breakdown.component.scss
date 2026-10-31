@@ -30,7 +30,6 @@ p {
   gap: 8px;
 }
 
-// Recessed glass track: lighter at the top with a bright rim.
 .track {
   position: relative;
   display: flex;
@@ -136,4 +135,3 @@ p {
   background: var(--gt-color-pink);
   box-shadow: 0 0 0 6px var(--gt-color-pink-soft);
 }
-

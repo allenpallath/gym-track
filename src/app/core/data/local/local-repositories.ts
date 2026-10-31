@@ -29,10 +29,6 @@ export class LocalRoutineRepository extends RoutineRepository {
     return from(this.db.routines.orderBy('updatedAt').reverse().toArray());
   }
 
-  getById(id: string): Observable<Routine | undefined> {
-    return from(this.db.routines.get(id));
-  }
-
   save(routine: Routine): Observable<Routine> {
     return from(this.db.routines.put(routine)).pipe(map(() => routine));
   }
@@ -48,10 +44,6 @@ export class LocalSessionRepository extends SessionRepository {
 
   getAll(): Observable<WorkoutSession[]> {
     return from(this.db.sessions.orderBy('startedAt').reverse().toArray());
-  }
-
-  getById(id: string): Observable<WorkoutSession | undefined> {
-    return from(this.db.sessions.get(id));
   }
 
   save(session: WorkoutSession): Observable<WorkoutSession> {

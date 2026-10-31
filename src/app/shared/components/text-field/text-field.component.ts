@@ -26,7 +26,7 @@ import { createId } from '@core/utils/id';
         [value]="value()"
         [placeholder]="placeholder()"
         [attr.maxlength]="maxLength()"
-        [attr.enterkeyhint]="'done'"
+        enterkeyhint="done"
         (input)="value.set($any($event.target).value)"
       />
     }

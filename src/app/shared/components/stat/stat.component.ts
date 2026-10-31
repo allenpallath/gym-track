@@ -1,10 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-/**
- * Big display number + small unit + label, e.g. "3H 40M this week".
- * Sizes itself from its own width (container query), so a row of stats stays
- * on one line per value on phones. Lay several out with the global `.stat-row` class.
- */
+/** Label + big display number + unit, e.g. "3H 40M this week". Group several with the `.stat-row` class. */
 @Component({
   selector: 'app-stat',
   template: `
@@ -37,8 +33,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
       gap: 5px;
     }
     .display-number {
-      /* Scales with the stat's width so values like "12h 24m" never break mid-value. */
-      /* 28cqi fits the longest values ("8,250 kg", "12h 24m") in a phone-width third. */
+      /* Scales with the stat's width; 28cqi fits the longest values ("8,250 kg") in a phone-width third. */
       font-size: min(2rem, 28cqi);
       white-space: nowrap;
       overflow: hidden;

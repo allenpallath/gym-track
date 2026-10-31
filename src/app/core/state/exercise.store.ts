@@ -77,7 +77,6 @@ export class ExerciseStore {
   private readonly _status = signal<'idle' | 'loading' | 'ready' | 'error'>('idle');
   private loadPromise: Promise<void> | null = null;
 
-  readonly exercises = this._exercises.asReadonly();
   readonly status = this._status.asReadonly();
 
   readonly byId = computed(() => new Map(this._exercises().map((e) => [e.id, e])));
@@ -122,8 +121,7 @@ export class ExerciseStore {
     const allowed = (e: Exercise) =>
       (!filters.muscle || e.primaryMuscles.includes(filters.muscle)) &&
       (!filters.equipment || e.equipment === filters.equipment) &&
-      (!filters.level || e.level === filters.level) &&
-      (!filters.category || e.category === filters.category);
+      (!filters.level || e.level === filters.level);
 
     const nameHits: Exercise[] = [];
     const otherHits: Exercise[] = [];

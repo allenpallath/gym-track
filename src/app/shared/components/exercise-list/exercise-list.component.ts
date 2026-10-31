@@ -74,7 +74,6 @@ export class ExerciseListComponent {
       muscle: this.muscle(),
       equipment: this.equipment(),
       level: this.level(),
-      category: null,
     };
     return this.store.search(filters);
   });

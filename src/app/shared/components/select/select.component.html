@@ -1,7 +1,3 @@
-@if (label()) {
-  <span class="label" [id]="uid + '-label'">{{ label() }}</span>
-}
-
 <button
   #trigger
   cdkOverlayOrigin
@@ -11,15 +7,13 @@
   role="combobox"
   aria-haspopup="listbox"
   [class.trigger--open]="open()"
-  [disabled]="disabled()"
   [attr.aria-expanded]="open()"
   [attr.aria-controls]="open() ? uid + '-listbox' : null"
-  [attr.aria-labelledby]="label() ? uid + '-label ' + uid + '-value' : null"
-  [attr.aria-label]="label() ? null : ariaLabel() || placeholder()"
+  [attr.aria-label]="ariaLabel() || placeholder()"
   (click)="toggle(trigger)"
   (keydown)="onTriggerKeydown($event, trigger)"
 >
-  <span class="value" [id]="uid + '-value'" [class.value--placeholder]="!selectedLabel()">
+  <span class="value" [class.value--placeholder]="!selectedLabel()">
     {{ selectedLabel() ?? placeholder() }}
   </span>
   <lucide-icon class="chevron" [img]="icons.ChevronDown" [size]="18" />
@@ -60,7 +54,7 @@
       [attr.tabindex]="searchable() ? -1 : 0"
       [attr.cdkFocusInitial]="searchable() ? null : ''"
       [attr.aria-activedescendant]="searchable() ? null : activeId()"
-      [attr.aria-label]="label() || ariaLabel() || placeholder()"
+      [attr.aria-label]="ariaLabel() || placeholder()"
     >
       @for (option of viewOptions(); track option.id; let i = $index) {
         <li

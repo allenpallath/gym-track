@@ -22,7 +22,7 @@
   background: var(--gt-color-surface-muted);
 }
 
-// Alternates start/end frames to show the movement.
+// Cross-fades the start/end photos to show the movement.
 .frame--alt {
   animation: frame-swap 2.4s ease-in-out infinite;
 }
@@ -101,8 +101,9 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: var(--gt-color-ink);
-  color: var(--gt-color-lime);
+  --jelly: var(--gt-color-lime);
+  @include mixins.jelly(sm, $glow: false);
+  color: #111;
   font-family: var(--gt-font-display);
   font-weight: 700;
 }
@@ -133,8 +134,8 @@
   align-items: center;
   gap: 12px;
   padding: 12px 12px 12px 16px;
-  background: var(--gt-color-surface);
   border-radius: var(--gt-radius-lg);
+  @include mixins.jelly-surface($lifted: false);
 }
 
 .routine-info {

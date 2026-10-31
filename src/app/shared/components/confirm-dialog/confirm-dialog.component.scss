@@ -1,0 +1,86 @@
+@use 'mixins';
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgb(17 17 17 / 0.38);
+  backdrop-filter: blur(2px);
+}
+
+.dialog {
+  position: fixed;
+  z-index: 61;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(360px, calc(100vw - 32px));
+  box-sizing: border-box;
+  padding: 26px 20px 20px;
+  border-radius: var(--gt-radius-2xl);
+  text-align: center;
+  @include mixins.jelly-surface;
+
+  h2,
+  p {
+    margin: 0;
+  }
+
+  p {
+    max-width: 290px;
+  }
+}
+
+.badge {
+  --jelly: var(--gt-color-lime);
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 4px;
+  border-radius: 50%;
+  @include mixins.jelly;
+  color: #111;
+}
+
+.dialog--danger .badge {
+  --jelly: var(--gt-color-pink);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  margin-top: 12px;
+
+  button {
+    padding: 0 12px;
+  }
+}
+
+.dialog-in {
+  animation: dialog-in 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.dialog-out {
+  animation: dialog-in 140ms ease-in reverse;
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    scale: 0.94;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog-in,
+  .dialog-out {
+    animation: none;
+  }
+}

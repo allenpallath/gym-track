@@ -10,6 +10,8 @@ import { EmptyStateComponent } from '@shared/components/empty-state/empty-state.
 import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { ExerciseImagePipe } from '@shared/pipes/exercise-image.pipe';
 import { ImgFallbackDirective } from '@shared/directives/img-fallback.directive';
+import { ConfirmService } from '@shared/components/confirm-dialog/confirm.service';
+import { deleteRoutineDialog } from '../routine-dialogs';
 
 interface RoutineCardVm {
   routine: Routine;
@@ -37,6 +39,7 @@ interface RoutineCardVm {
 export class RoutineListPage {
   private readonly store = inject(RoutineStore);
   private readonly launcher = inject(SessionLauncherService);
+  private readonly confirm = inject(ConfirmService);
 
   protected readonly icons = { ListChecks, Pencil, Play, Plus, Trash2, Zap };
   protected readonly loaded = this.store.loaded;
@@ -66,7 +69,7 @@ export class RoutineListPage {
   }
 
   protected async remove(routine: Routine): Promise<void> {
-    if (confirm(`Delete "${routine.name}"? This can't be undone.`)) {
+    if (await this.confirm.ask(deleteRoutineDialog(routine.name))) {
       await this.store.delete(routine.id);
     }
   }

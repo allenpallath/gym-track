@@ -13,7 +13,7 @@ export interface SelectOption<T> {
 /**
  * Design-system dropdown (replaces native <select>). Values are compared with `===`.
  *
- *   <app-select label="Exercise" [options]="opts()" [(value)]="selectedId" searchable />
+ *   <app-select ariaLabel="Exercise" [options]="opts()" [(value)]="selectedId" searchable />
  *
  * Accessibility: trigger is a combobox button; the panel is a listbox using
  * aria-activedescendant, so focus stays on one element while arrows move the highlight.
@@ -30,13 +30,10 @@ export class SelectComponent<T> {
 
   readonly options = input.required<SelectOption<T>[]>();
   readonly value = model<T | null>(null);
-  /** Visible label above the trigger. Leave empty and set `ariaLabel` for a compact control. */
-  readonly label = input('');
   readonly ariaLabel = input('');
   readonly placeholder = input('Select…');
   /** Adds a filter box to the panel — worth it for long lists. */
   readonly searchable = input(false, { transform: booleanAttribute });
-  readonly disabled = input(false, { transform: booleanAttribute });
 
   protected readonly icons = { Check, ChevronDown };
   protected readonly uid = `sel-${createId().slice(0, 8)}`;
@@ -131,7 +128,6 @@ export class SelectComponent<T> {
   }
 
   private openPanel(origin: HTMLElement): void {
-    if (this.disabled()) return;
     this.query.set('');
     this.panelWidth.set(origin.getBoundingClientRect().width);
     const selected = this.viewOptions().findIndex((o) => o.selected);

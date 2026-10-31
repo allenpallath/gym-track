@@ -24,7 +24,6 @@ export class RoutineStore {
     return this.loadPromise;
   }
 
-  /** Builds a new, unsaved routine object. */
   createDraft(name = '', exercises: ExerciseEntry[] = []): Routine {
     const now = new Date().toISOString();
     return { id: createId(), name, notes: '', exercises, createdAt: now, updatedAt: now, lastPerformedAt: null };

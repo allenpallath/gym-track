@@ -14,6 +14,7 @@ import {
 import { ExercisePickerComponent } from '@shared/components/exercise-picker/exercise-picker.component';
 import { DurationPipe } from '@shared/pipes/duration.pipe';
 import { VolumePipe } from '@shared/pipes/volume.pipe';
+import { ConfirmService } from '@shared/components/confirm-dialog/confirm.service';
 
 @Component({
   selector: 'app-active-session-page',
@@ -35,6 +36,7 @@ export class ActiveSessionPage {
   private readonly session = inject(ActiveSessionService);
   private readonly launcher = inject(SessionLauncherService);
   private readonly router = inject(Router);
+  private readonly confirm = inject(ConfirmService);
 
   protected readonly icons = { ChevronLeft, Dumbbell, Flag, Plus, Timer };
 
@@ -80,7 +82,14 @@ export class ActiveSessionPage {
   }
 
   protected async discard(): Promise<void> {
-    if (!confirm('Discard this workout? Logged sets will be lost.')) return;
+    const ok = await this.confirm.ask({
+      title: 'Discard workout?',
+      message: 'Everything you logged in this workout will be lost.',
+      confirmText: 'Discard',
+      cancelText: 'Keep going',
+      tone: 'danger',
+    });
+    if (!ok) return;
     this.session.discard();
     await this.router.navigateByUrl('/routines');
   }
@@ -88,7 +97,13 @@ export class ActiveSessionPage {
   protected async finish(): Promise<void> {
     if (this.finishing()) return;
     if (this.totals().sets === 0) {
-      if (!confirm('No sets ticked — mark all sets as done and save?')) return;
+      const ok = await this.confirm.ask({
+        title: 'No sets ticked',
+        message: 'Mark every set as done and save this workout?',
+        confirmText: 'Mark all & save',
+        cancelText: 'Go back',
+      });
+      if (!ok) return;
       this.session.updateExercises((list) =>
         list.map((e) => ({ ...e, sets: e.sets.map((s) => ({ ...s, completed: true })) })),
       );

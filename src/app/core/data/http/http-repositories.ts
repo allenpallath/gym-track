@@ -8,10 +8,8 @@ import { ExerciseRepository, RoutineRepository, SessionRepository } from '../rep
 // REST implementations, activated by `environment.dataSource = 'api'`.
 // Expected endpoints (JSON bodies use the same shapes as shared/models):
 //   GET    /exercises
-//   GET    /routines            GET /routines/:id
-//   PUT    /routines/:id        (upsert)      DELETE /routines/:id
-//   GET    /sessions            GET /sessions/:id
-//   PUT    /sessions/:id        (upsert)      DELETE /sessions/:id
+//   GET    /routines      PUT /routines/:id (upsert)      DELETE /routines/:id
+//   GET    /sessions      PUT /sessions/:id (upsert)      DELETE /sessions/:id
 
 @Injectable()
 export class HttpExerciseRepository extends ExerciseRepository {
@@ -31,10 +29,6 @@ export class HttpRoutineRepository extends RoutineRepository {
     return this.http.get<Routine[]>(this.url);
   }
 
-  getById(id: string): Observable<Routine | undefined> {
-    return this.http.get<Routine>(`${this.url}/${encodeURIComponent(id)}`);
-  }
-
   save(routine: Routine): Observable<Routine> {
     return this.http.put<Routine>(`${this.url}/${encodeURIComponent(routine.id)}`, routine);
   }
@@ -51,10 +45,6 @@ export class HttpSessionRepository extends SessionRepository {
 
   getAll(): Observable<WorkoutSession[]> {
     return this.http.get<WorkoutSession[]>(this.url);
-  }
-
-  getById(id: string): Observable<WorkoutSession | undefined> {
-    return this.http.get<WorkoutSession>(`${this.url}/${encodeURIComponent(id)}`);
   }
 
   save(session: WorkoutSession): Observable<WorkoutSession> {

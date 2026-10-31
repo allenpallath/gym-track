@@ -23,10 +23,8 @@
   padding: $padding;
 }
 
-// White "jelly" for cards and other large neutral surfaces — the same glossy
-// language as the coloured jelly, adapted for white: coloured rims don't show
-// on white, so depth comes from a bright top rim, a soft top sheen and gentle
-// inner shading along the bottom and sides. Theme-aware via --gt-jelly-* tokens.
+// White jelly for cards and other neutral surfaces. White rims don't show on
+// white, so depth comes from a top sheen and inner shading (--gt-jelly-* tokens).
 @mixin jelly-surface($lifted: true) {
   background:
     radial-gradient(120% 45% at 50% 0%, var(--gt-jelly-rim), rgb(255 255 255 / 0) 70%),
@@ -65,11 +63,8 @@
   overflow: hidden;
 }
 
-// Glossy "jelly" fill — the app's signature surface for lime/pink accents.
-// Colour comes from the --jelly custom property (set it on the element or via
-// .jelly--lime / .jelly--pink); light and deep shades are derived from it.
-//   $size: md for buttons/cards/pills, sm for small dots & checkmarks.
-//   $glow: soft coloured halo underneath.
+// Glossy "jelly" fill for lime/pink accents. Set the colour with --jelly on the
+// element; light/deep shades are derived. $size sm suits small dots/checkmarks.
 @mixin jelly($size: md, $glow: true) {
   $rim: if($size == sm, 1px, 2px);
   $spread: if($size == sm, 2px, 4px);
@@ -99,6 +94,19 @@
     $shadows: append($shadows, 0 ($spread * 1.5) ($spread * 4) (-$spread) color-mix(in srgb, var(--jelly) 70%, transparent), comma);
   }
   box-shadow: $shadows;
+}
+
+// Coloured glow on ::before so it doesn't replace the element's own box-shadow.
+// The element must be positioned and not use ::before itself.
+@mixin jelly-glow {
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 8px 26px -8px color-mix(in srgb, var(--jelly, var(--gt-color-lime)) 75%, transparent);
+    pointer-events: none;
+  }
 }
 
 @mixin focus-ring {

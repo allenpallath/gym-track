@@ -1,10 +1,7 @@
 /*
- * Tailwind v4 entry. Kept as plain CSS (not SCSS) because Sass would try to
- * resolve `@import "tailwindcss"` itself.
- *
- * Theme values point at the CSS custom properties from `_tokens.scss`, so
- * utilities like `bg-surface` / `text-ink` follow the active theme
- * automatically when `[data-theme="dark"]` is set on <html>.
+ * Tailwind v4 entry, kept as plain CSS because Sass would try to resolve
+ * `@import "tailwindcss"` itself. Theme values point at the --gt-* tokens so
+ * utilities (`bg-surface`, `text-ink`, …) follow the active theme.
  */
 @import "tailwindcss";
 
@@ -32,7 +29,6 @@
   --color-lime: var(--gt-color-lime);
   --color-lime-soft: var(--gt-color-lime-soft);
   --color-lime-strong: var(--gt-color-lime-strong);
-  --color-danger: var(--gt-color-danger);
 
   --radius-sm: var(--gt-radius-sm);
   --radius-md: var(--gt-radius-md);

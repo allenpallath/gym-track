@@ -4,18 +4,7 @@
   display: block;
   border-radius: var(--gt-radius-xl);
   overflow: hidden;
-}
-
-:host(.card--surface) {
   @include mixins.jelly-surface;
-}
-:host(.card--muted) {
-  background: var(--gt-color-surface-muted);
-}
-:host(.card--lime) {
-  --jelly: var(--gt-color-lime);
-  @include mixins.jelly;
-  color: #111;
 }
 
 :host(.card-pad--none) {

@@ -5,6 +5,8 @@ import { filter, map } from 'rxjs';
 import { ActiveSessionService } from '@core/state/active-session.service';
 import { BottomNavComponent } from '@layout/bottom-nav/bottom-nav.component';
 import { SessionPillComponent } from '@layout/session-pill/session-pill.component';
+import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
+import { ConfirmService } from '@shared/components/confirm-dialog/confirm.service';
 
 /** Route data flags understood by the shell. */
 export interface ShellRouteData {
@@ -14,7 +16,7 @@ export interface ShellRouteData {
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, BottomNavComponent, SessionPillComponent],
+  imports: [RouterOutlet, BottomNavComponent, SessionPillComponent, ConfirmDialogComponent],
   template: `
     <main>
       <router-outlet />
@@ -25,12 +27,17 @@ export interface ShellRouteData {
     @if (!routeData().hideNav) {
       <app-bottom-nav />
     }
+    <!-- Dialog code (incl. CDK focus trap) only downloads the first time something asks. -->
+    @defer (when confirm.current()) {
+      <app-confirm-dialog />
+    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
   private readonly router = inject(Router);
   private readonly activeSession = inject(ActiveSessionService);
+  protected readonly confirm = inject(ConfirmService);
 
   private readonly url = toSignal(
     this.router.events.pipe(

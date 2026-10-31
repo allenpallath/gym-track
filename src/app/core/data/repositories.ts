@@ -12,7 +12,6 @@ export abstract class ExerciseRepository {
 
 export abstract class RoutineRepository {
   abstract getAll(): Observable<Routine[]>;
-  abstract getById(id: string): Observable<Routine | undefined>;
   /** Insert or update (upsert). Returns the stored routine. */
   abstract save(routine: Routine): Observable<Routine>;
   abstract delete(id: string): Observable<void>;
@@ -20,7 +19,6 @@ export abstract class RoutineRepository {
 
 export abstract class SessionRepository {
   abstract getAll(): Observable<WorkoutSession[]>;
-  abstract getById(id: string): Observable<WorkoutSession | undefined>;
   abstract save(session: WorkoutSession): Observable<WorkoutSession>;
   abstract delete(id: string): Observable<void>;
 }

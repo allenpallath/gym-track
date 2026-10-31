@@ -29,10 +29,8 @@
   color: var(--gt-color-muted);
 }
 
-// Row of <app-stat>s with equal columns and hairline dividers.
-// minmax(0, 1fr) keeps columns equal even when one value is long.
-// Every column gets the same left padding (the row is pulled back by the same
-// amount) so all stats have identical widths and therefore identical number sizes.
+// Row of <app-stat>s. Every column gets the same padding (row pulled back to
+// compensate) so all stats are equally wide and their numbers size identically.
 .stat-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

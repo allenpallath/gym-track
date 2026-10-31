@@ -21,8 +21,11 @@ $theme-light: (
   color-lime-soft: #eef8cf,
   color-lime-strong: #6f8f12,
   color-danger: #e5484d,
-  shadow-card: (0 1px 2px rgb(17 17 17 / 0.04), 0 8px 24px rgb(17 17 17 / 0.04)),
+  shadow-card: (0 1px 2px rgb(17 17 17 / 0.04), 0 12px 28px -14px rgb(17 17 17 / 0.14)),
   shadow-float: 0 12px 32px rgb(17 17 17 / 0.12),
+  // Jelly surfaces: bright top rim + soft inner shading (see `jelly-surface` mixin).
+  jelly-rim: rgb(255 255 255 / 0.95),
+  jelly-shade: rgb(17 17 17 / 0.08),
 );
 
 $theme-dark: (
@@ -43,6 +46,8 @@ $theme-dark: (
   color-danger: #ff6b6f,
   shadow-card: 0 1px 2px rgb(0 0 0 / 0.5),
   shadow-float: 0 12px 32px rgb(0 0 0 / 0.6),
+  jelly-rim: rgb(255 255 255 / 0.08),
+  jelly-shade: rgb(0 0 0 / 0.45),
 );
 
 // Theme-independent tokens.

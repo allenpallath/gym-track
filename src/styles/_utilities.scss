@@ -29,6 +29,33 @@
   color: var(--gt-color-muted);
 }
 
+// Row of <app-stat>s with equal columns and hairline dividers.
+// minmax(0, 1fr) keeps columns equal even when one value is long.
+// Every column gets the same left padding (the row is pulled back by the same
+// amount) so all stats have identical widths and therefore identical number sizes.
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-left: -12px;
+
+  > * {
+    padding-left: 12px;
+  }
+
+  > * + * {
+    border-left: 1px solid var(--gt-color-line);
+  }
+}
+
+// Jelly surface for any element. Lime by default; override with
+// `style="--jelly: var(--gt-color-pink)"` or use the `jelly` mixin in SCSS.
+.jelly {
+  --jelly: var(--gt-color-lime);
+  color: #111;
+  @include mixins.jelly;
+}
+
 .surface-card {
   @include mixins.card;
 }
@@ -69,15 +96,6 @@
     outline: none;
     border-color: var(--gt-color-ink);
   }
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
 }
 
 // Built-in Angular `animate.enter` / `animate.leave` classes.

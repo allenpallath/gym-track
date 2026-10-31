@@ -1,0 +1,73 @@
+@use 'mixins';
+
+:host {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 46px;
+  border-radius: 999px;
+  @include mixins.jelly-surface;
+
+  &:focus-within {
+    @include mixins.focus-ring;
+  }
+}
+
+:host(.compact) {
+  height: 38px;
+  @include mixins.jelly-surface($lifted: false);
+}
+
+.icon {
+  position: absolute;
+  left: 16px;
+  color: var(--gt-color-muted);
+  pointer-events: none;
+}
+
+:host(.compact) .icon {
+  left: 13px;
+}
+
+.input {
+  width: 100%;
+  height: 100%;
+  padding: 0 42px 0 42px;
+  border: 0;
+  background: transparent;
+  color: var(--gt-color-ink);
+  font: inherit;
+  font-size: 16px; // avoids iOS zoom on focus
+
+  &::placeholder {
+    color: var(--gt-color-subtle);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+:host(.compact) .input {
+  padding-left: 36px;
+}
+
+.clear {
+  position: absolute;
+  right: 9px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--gt-color-surface-muted);
+  color: var(--gt-color-muted);
+  cursor: pointer;
+}
+
+:host(.compact) .clear {
+  width: 24px;
+  height: 24px;
+  right: 7px;
+}

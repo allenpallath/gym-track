@@ -1,3 +1,5 @@
+@use 'mixins';
+
 :host {
   display: block;
   border-radius: var(--gt-radius-xl);
@@ -5,22 +7,15 @@
 }
 
 :host(.card--surface) {
-  background: var(--gt-color-surface);
-  box-shadow: var(--gt-shadow-card);
+  @include mixins.jelly-surface;
 }
 :host(.card--muted) {
   background: var(--gt-color-surface-muted);
 }
-:host(.card--dark) {
-  background: var(--gt-color-ink);
-  color: var(--gt-color-surface);
-}
 :host(.card--lime) {
-  background: var(--gt-color-lime);
+  --jelly: var(--gt-color-lime);
+  @include mixins.jelly;
   color: #111;
-}
-:host(.card--pink) {
-  background: var(--gt-color-pink-soft);
 }
 
 :host(.card-pad--none) {

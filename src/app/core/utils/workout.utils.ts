@@ -7,7 +7,7 @@ import { createId } from './id';
 const DEFAULT_SET_COUNT = 3;
 const DEFAULT_REPS = 10;
 
-export function createSet(template?: Partial<WorkoutSet>): WorkoutSet {
+function createSet(template?: Partial<WorkoutSet>): WorkoutSet {
   return {
     id: createId(),
     reps: template?.reps ?? DEFAULT_REPS,

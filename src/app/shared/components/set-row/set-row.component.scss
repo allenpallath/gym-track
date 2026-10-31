@@ -1,3 +1,5 @@
+@use 'mixins';
+
 :host {
   display: grid;
   grid-template-columns: 32px 1fr 1fr 32px;
@@ -54,7 +56,8 @@
 }
 
 .check--done {
-  background: var(--gt-color-lime);
+  --jelly: var(--gt-color-lime);
+  @include mixins.jelly(sm);
   color: #111;
 }
 

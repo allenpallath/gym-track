@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-export type CardVariant = 'surface' | 'muted' | 'dark' | 'lime' | 'pink';
+export type CardVariant = 'surface' | 'muted' | 'lime';
 export type CardPadding = 'none' | 'sm' | 'md' | 'lg';
 
 /** Rounded surface container. Content marked `cardHeader` is projected first. */

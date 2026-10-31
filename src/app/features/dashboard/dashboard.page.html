@@ -26,7 +26,11 @@
       <a class="link" routerLink="/routines">See all</a>
     </div>
 
-    @if (routinesLoaded() && !routines().length) {
+    <!-- Render only after loading: a snap container keeps the "New routine" tile
+         snapped if cards are inserted before it, hiding the routines. -->
+    @if (!routinesLoaded()) {
+      <div class="carousel-placeholder"></div>
+    } @else if (!routines().length) {
       <app-empty-state title="No routines yet" message="Build your first routine and start a session from here." [icon]="icons.ListChecks">
         <a appButton variant="accent" routerLink="/routines/new">
           <lucide-icon [img]="icons.Plus" [size]="18" />

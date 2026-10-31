@@ -1,3 +1,5 @@
+@use 'mixins';
+
 :host {
   display: inline-flex;
   align-items: center;
@@ -38,9 +40,10 @@
   color: var(--gt-color-lime-strong);
 }
 
-:host(.chip--dark),
 :host(.chip--selected) {
-  background: var(--gt-color-ink);
-  border-color: var(--gt-color-ink);
-  color: var(--gt-color-surface);
+  --jelly: var(--gt-color-lime);
+  @include mixins.jelly($glow: false);
+  border-color: transparent;
+  color: #111;
+  font-weight: 600;
 }

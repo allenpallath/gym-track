@@ -1,6 +1,6 @@
 import { booleanAttribute, ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-export type ChipTone = 'neutral' | 'pink' | 'lime' | 'dark';
+export type ChipTone = 'neutral' | 'pink' | 'lime';
 
 /**
  * Pill used for filters (`<button appChip [selected]="...">`) and static tags

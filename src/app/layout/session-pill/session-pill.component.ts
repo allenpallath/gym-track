@@ -9,7 +9,7 @@ import { DurationPipe } from '@shared/pipes/duration.pipe';
   selector: 'app-session-pill',
   imports: [RouterLink, LucideAngularModule, DurationPipe],
   template: `
-    <a routerLink="/session" class="pill" animate.enter="fade-in">
+    <a routerLink="/session" class="pill jelly" animate.enter="fade-in">
       <span class="dot"></span>
       <span class="name">{{ session.draft()?.routineName }}</span>
       <lucide-icon [img]="timerIcon" [size]="16" />
@@ -34,12 +34,10 @@ import { DurationPipe } from '@shared/pipes/duration.pipe';
       max-width: 340px;
       padding: 10px 16px;
       border-radius: 999px;
-      background: var(--gt-color-lime);
       color: #111;
       font-weight: 600;
       font-size: 0.85rem;
       text-decoration: none;
-      box-shadow: var(--gt-shadow-float);
       pointer-events: auto;
     }
     .dot {

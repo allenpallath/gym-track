@@ -1,3 +1,5 @@
+@use 'mixins';
+
 :host {
   position: fixed;
   left: 0;
@@ -47,11 +49,11 @@ nav {
 
 .item--active {
   flex-grow: 1.8;
-  background: var(--gt-color-ink);
-  color: var(--gt-color-lime);
+  --jelly: var(--gt-color-lime);
+  @include mixins.jelly;
+  color: #111; // lime stays light in both themes, so keep dark text on it
 
   .label {
     display: inline;
-    color: var(--gt-color-surface);
   }
 }

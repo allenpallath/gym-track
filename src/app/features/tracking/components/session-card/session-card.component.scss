@@ -1,8 +1,9 @@
+@use 'mixins';
+
 :host {
   display: block;
-  background: var(--gt-color-surface);
+  @include mixins.jelly-surface;
   border-radius: var(--gt-radius-xl);
-  box-shadow: var(--gt-shadow-card);
   overflow: hidden;
   scroll-margin-top: 16px;
 }

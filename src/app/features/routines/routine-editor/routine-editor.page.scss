@@ -1,3 +1,5 @@
+@use 'mixins';
+
 // Nav is hidden on this route, so reserve space for the sticky save bar instead.
 .editor {
   padding-bottom: calc(110px + env(safe-area-inset-bottom));
@@ -8,9 +10,8 @@
   flex-direction: column;
   gap: 14px;
   padding: 18px;
-  background: var(--gt-color-surface);
+  @include mixins.jelly-surface;
   border-radius: var(--gt-radius-xl);
-  box-shadow: var(--gt-shadow-card);
 }
 
 .section-head {

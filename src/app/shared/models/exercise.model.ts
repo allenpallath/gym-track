@@ -76,11 +76,3 @@ export interface ExerciseFilters {
   level: ExerciseLevel | null;
   category: ExerciseCategory | null;
 }
-
-export const EMPTY_EXERCISE_FILTERS: ExerciseFilters = {
-  query: '',
-  muscle: null,
-  equipment: null,
-  level: null,
-  category: null,
-};

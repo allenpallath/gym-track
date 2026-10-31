@@ -12,8 +12,12 @@
       <span class="caption">This {{ monthLabel() }}</span>
       <div class="stat-row">
         <app-stat label="Sessions" [value]="monthStats().count" unit="workouts" />
-        <app-stat label="Total time" [value]="monthStats().durationSec | duration" />
-        <app-stat label="Volume" [value]="monthStats().volume | volume" />
+        <app-stat label="Time trained" [value]="monthStats().durationSec | duration" />
+        <app-stat
+          label="Volume"
+          [value]="monthStats().volume | volume: 'value'"
+          [unit]="(monthStats().volume | volume: 'unit') + ' lifted'"
+        />
       </div>
     </app-card>
 

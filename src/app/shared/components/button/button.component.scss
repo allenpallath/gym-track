@@ -1,3 +1,5 @@
+@use 'mixins';
+
 :host {
   display: inline-flex;
   align-items: center;
@@ -59,17 +61,24 @@
   color: var(--gt-color-surface);
 }
 :host(.gt-btn--accent) {
-  background: var(--gt-color-lime);
+  --jelly: var(--gt-color-lime);
+  @include mixins.jelly;
   color: #111;
 }
 :host(.gt-btn--pink) {
-  background: var(--gt-color-pink);
+  --jelly: var(--gt-color-pink);
+  @include mixins.jelly;
   color: #111;
 }
+// Small buttons get the finer highlights so the gloss doesn't overpower them.
+:host(.gt-btn--sm.gt-btn--accent),
+:host(.gt-btn--sm.gt-btn--pink) {
+  @include mixins.jelly(sm);
+}
 :host(.gt-btn--outline) {
-  background: var(--gt-color-surface);
-  color: var(--gt-color-ink);
+  @include mixins.jelly-surface($lifted: false);
   border-color: var(--gt-color-line);
+  color: var(--gt-color-ink);
 }
 :host(.gt-btn--ghost) {
   background: transparent;
@@ -78,9 +87,4 @@
   &:hover:not([disabled]) {
     background: var(--gt-color-surface-muted);
   }
-}
-:host(.gt-btn--danger) {
-  background: transparent;
-  color: var(--gt-color-danger);
-  border-color: currentColor;
 }

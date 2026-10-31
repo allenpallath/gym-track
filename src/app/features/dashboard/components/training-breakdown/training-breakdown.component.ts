@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { addDays, startOfDay, startOfWeek, toDayKey } from '@core/utils/date.utils';
 import { WorkoutSession } from '@shared/models';
 import { StatComponent } from '@shared/components/stat/stat.component';
+import { formatVolume } from '@shared/pipes/volume.pipe';
 
 interface DayBar {
   key: string;
@@ -71,12 +72,12 @@ export class TrainingBreakdownComponent {
     }
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
-    const big = volume >= 10_000;
+    const { value, unit } = formatVolume(volume);
     return {
       time: hours ? `${hours}H ${minutes}M` : `${minutes}M`,
       count,
-      volume: big ? (volume / 1000).toFixed(1) : Math.round(volume).toLocaleString(),
-      volumeUnit: big ? 't lifted' : 'kg lifted',
+      volume: value,
+      volumeUnit: `${unit} lifted`,
     };
   });
 }

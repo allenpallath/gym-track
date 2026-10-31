@@ -8,7 +8,10 @@
         @if (bar.isToday) {
           <span class="tip" [style.bottom.%]="bar.height">{{ bar.minutes }} min</span>
         }
-        <div [class]="'fill fill--' + bar.tone" [style.height.%]="bar.height"></div>
+        <div [class]="'fill fill--' + bar.tone" [style.height.%]="bar.height">
+          <span class="fill-glow"></span>
+          <span class="fill-body"></span>
+        </div>
       </div>
       <span class="letter" [class.letter--today]="bar.isToday">{{ bar.letter }}</span>
     </div>
@@ -19,8 +22,8 @@
   <span class="rail-dot" [style.left]="'calc(' + (todayIndex + 0.5) + ' * 100% / 7)'"></span>
 </div>
 
-<div class="stats">
-  <app-stat label="Total load" [value]="week().time" unit="this week" />
+<div class="stat-row">
+  <app-stat label="Time trained" [value]="week().time" unit="this week" />
   <app-stat label="Sessions" [value]="week().count" unit="this week" />
   <app-stat label="Volume" [value]="week().volume" [unit]="week().volumeUnit" />
 </div>

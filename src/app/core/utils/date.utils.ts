@@ -33,7 +33,3 @@ export function startOfMonth(date: Date): Date {
 export function addMonths(date: Date, months: number): Date {
   return new Date(date.getFullYear(), date.getMonth() + months, 1);
 }
-
-export function isSameDay(a: Date, b: Date): boolean {
-  return toDayKey(a) === toDayKey(b);
-}

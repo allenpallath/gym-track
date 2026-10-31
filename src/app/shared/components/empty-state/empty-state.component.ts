@@ -14,6 +14,8 @@ import { LucideAngularModule, LucideIconData, Sparkles } from 'lucide-angular';
     <ng-content />
   `,
   styles: `
+    @use 'mixins';
+
     :host {
       display: flex;
       flex-direction: column;
@@ -22,16 +24,17 @@ import { LucideAngularModule, LucideIconData, Sparkles } from 'lucide-angular';
       gap: 10px;
       padding: 40px 24px;
       border-radius: var(--gt-radius-xl);
-      background: var(--gt-color-surface);
+      @include mixins.jelly-surface;
     }
     .icon {
+      --jelly: var(--gt-color-lime);
       display: grid;
       place-items: center;
       width: 56px;
       height: 56px;
       border-radius: 18px;
-      background: var(--gt-color-lime-soft);
-      color: var(--gt-color-lime-strong);
+      @include mixins.jelly(sm);
+      color: #111;
     }
     h3,
     p {

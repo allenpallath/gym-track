@@ -1,3 +1,5 @@
+@use 'mixins';
+
 :host {
   display: block;
 }
@@ -28,7 +30,8 @@
   gap: 10px 12px;
   padding: 18px 20px;
   border-radius: var(--gt-radius-xl);
-  background: var(--gt-color-lime);
+  --jelly: var(--gt-color-lime);
+  @include mixins.jelly;
   color: #111;
   text-decoration: none;
 }
@@ -105,10 +108,19 @@
 .carousel {
   display: flex;
   gap: 12px;
-  margin: 0 calc(-1 * var(--gt-space-page));
-  padding: 2px var(--gt-space-page) 6px;
+  // A horizontal scroller clips vertically too, so leave room for the cards'
+  // jelly shadow (~26px) and pull the next section back up by the same amount.
+  margin: 0 calc(-1 * var(--gt-space-page)) -22px;
+  padding: 2px var(--gt-space-page) 28px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
+  // Without this, snapping aligns cards to the container edge and swallows the
+  // side padding, so the first card ends up flush with the screen.
+  scroll-padding-inline: var(--gt-space-page);
+}
+
+.carousel-placeholder {
+  height: 199px; // card height + carousel vertical padding, avoids a jump on load
 }
 
 .routine {

@@ -2,7 +2,7 @@
   <h2 class="display-heading">Weekly volume</h2>
   <p class="caption">Last {{ volumeData().labels?.length }} weeks · completed sets</p>
   <div class="chart">
-    <canvas baseChart type="bar" [data]="volumeData()" [options]="barOptions"></canvas>
+    <canvas baseChart type="bar" [data]="volumeData()" [options]="barOptions" [plugins]="barPlugins"></canvas>
   </div>
 </app-card>
 
@@ -15,16 +15,17 @@
   </div>
 
   @if (exercises().length) {
-    <label class="sr-only" for="progress-exercise">Exercise</label>
-    <select id="progress-exercise" class="field-input select" [value]="selectedExerciseId()" (change)="onExerciseChange($event)">
-      @for (e of exercises(); track e.id) {
-        <option [value]="e.id" [selected]="e.id === selectedExerciseId()">{{ e.name }}</option>
-      }
-    </select>
+    <app-select
+      class="select"
+      ariaLabel="Exercise"
+      [options]="exerciseOptions()"
+      [searchable]="exerciseOptions().length > 8"
+      [(value)]="selectedExerciseId"
+    />
 
     @if (progressPoints().length) {
       <div class="chart">
-        <canvas baseChart type="line" [data]="progressData()" [options]="lineOptions"></canvas>
+        <canvas baseChart type="line" [data]="progressData()" [options]="lineOptions" [plugins]="linePlugins"></canvas>
       </div>
     } @else {
       <p class="caption empty">No weighted sets logged for this exercise yet.</p>

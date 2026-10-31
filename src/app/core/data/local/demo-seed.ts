@@ -109,7 +109,7 @@ function buildEntries(routine: DemoRoutine, week: number, rand: () => number, li
   });
 }
 
-export function buildDemoData(today = new Date()): { routines: Routine[]; sessions: WorkoutSession[] } {
+function buildDemoData(today = new Date()): { routines: Routine[]; sessions: WorkoutSession[] } {
   const rand = seededRandom(42);
   const todayStart = startOfDay(today);
   // Monday of the week `WEEKS - 1` weeks ago.

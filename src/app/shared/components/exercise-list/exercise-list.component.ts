@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, output, si
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { debounceTime } from 'rxjs';
-import { LucideAngularModule, Check, Plus, Search, SlidersHorizontal, X } from 'lucide-angular';
+import { LucideAngularModule, Check, Plus, SlidersHorizontal } from 'lucide-angular';
 import { ExerciseStore } from '@core/state/exercise.store';
 import {
   EQUIPMENT_TYPES,
@@ -15,6 +15,7 @@ import {
   MuscleGroup,
 } from '@shared/models';
 import { ButtonComponent } from '../button/button.component';
+import { SearchFieldComponent } from '../search-field/search-field.component';
 import { ChipComponent } from '../chip/chip.component';
 import { ExerciseImagePipe } from '../../pipes/exercise-image.pipe';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
@@ -29,7 +30,15 @@ import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
  */
 @Component({
   selector: 'app-exercise-list',
-  imports: [ScrollingModule, LucideAngularModule, ButtonComponent, ChipComponent, ExerciseImagePipe, ImgFallbackDirective],
+  imports: [
+    ScrollingModule,
+    LucideAngularModule,
+    ButtonComponent,
+    ChipComponent,
+    SearchFieldComponent,
+    ExerciseImagePipe,
+    ImgFallbackDirective,
+  ],
   templateUrl: './exercise-list.component.html',
   styleUrl: './exercise-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,7 +51,7 @@ export class ExerciseListComponent {
   readonly selected = output<Exercise>();
   readonly added = output<Exercise>();
 
-  protected readonly icons = { Search, X, Plus, Check, SlidersHorizontal };
+  protected readonly icons = { Plus, Check, SlidersHorizontal };
   protected readonly muscles = MUSCLE_GROUPS;
   protected readonly equipmentTypes = EQUIPMENT_TYPES;
   protected readonly levels = EXERCISE_LEVELS;
@@ -57,10 +66,9 @@ export class ExerciseListComponent {
 
   private readonly debouncedQuery = toSignal(toObservable(this.query).pipe(debounceTime(180)), { initialValue: '' });
 
-  protected readonly loading = this.store.loading;
   protected readonly status = this.store.status;
 
-  protected readonly results = computed(() => {
+  private readonly searchResult = computed(() => {
     const filters: ExerciseFilters = {
       query: this.debouncedQuery(),
       muscle: this.muscle(),
@@ -68,8 +76,15 @@ export class ExerciseListComponent {
       level: this.level(),
       category: null,
     };
-    return this.store.filter(filters);
+    return this.store.search(filters);
   });
+
+  protected readonly results = computed(() => this.searchResult().items);
+  protected readonly closeMatches = computed(() => this.searchResult().closeMatches);
+  /** Every result is a close match → the user almost certainly made a typo. */
+  protected readonly onlyCloseMatches = computed(
+    () => this.closeMatches() > 0 && this.closeMatches() === this.results().length,
+  );
 
   protected readonly trackById = (_: number, e: Exercise) => e.id;
 
@@ -77,10 +92,6 @@ export class ExerciseListComponent {
 
   constructor() {
     void this.store.load();
-  }
-
-  protected onQueryInput(event: Event): void {
-    this.query.set((event.target as HTMLInputElement).value);
   }
 
   protected toggleMuscle(muscle: MuscleGroup | null): void {
@@ -93,10 +104,6 @@ export class ExerciseListComponent {
 
   protected toggleLevel(value: ExerciseLevel): void {
     this.level.update((current) => (current === value ? null : value));
-  }
-
-  protected clearQuery(): void {
-    this.query.set('');
   }
 
   protected retry(): void {

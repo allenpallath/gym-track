@@ -27,7 +27,7 @@ Production builds never seed.
 
 | Area | What it does |
 |------|--------------|
-| **Exercises** | Search + filter (muscle, equipment, level) over the full catalogue with a virtual-scrolled list; detail page with animated start/end frames, muscles and instructions; add to any routine. |
+| **Exercises** | Typo-tolerant search (Fuse.js + edit-distance re-ranking; gym slang like "abs", "db", "rdl") + filters (muscle, equipment, level) over the full catalogue with a virtual-scrolled list; detail page with animated start/end frames, muscles and instructions; add to any routine. |
 | **Routines** | Create / edit / delete routines. Each exercise has rows of sets with KG and REPS. Save from the sticky bottom bar; unsaved changes are guarded. |
 | **Session** | Start from a routine (or empty). Live timer, tick sets as done, change weights/reps, add exercises mid-workout. Survives reloads (localStorage). Finish saves the session. |
 | **History** | Month calendar with workout days, per-day session list with full set detail, weekly volume chart and per-exercise progress chart. |
@@ -92,8 +92,22 @@ Nothing else changes — `provideDataLayer()` binds the `Http*` repositories ins
 
 - **Tokens** — `src/styles/_tokens.scss` holds SCSS maps (`$theme-light`, `$theme-dark`, `$static-tokens`) emitted as CSS custom properties (`--gt-color-pink`, `--gt-radius-xl`, …).
 - **Tailwind v4** — `src/styles/tailwind.css` maps those variables into the Tailwind theme, so utilities like `bg-surface`, `text-muted`, `rounded-xl`, `font-display` follow the active theme.
-- **Mixins** — `_mixins.scss` (`respond`, `card`, `display-heading`, `line-clamp`, …). Use in component SCSS with `@use 'mixins';`.
-- **Global classes** — `_utilities.scss` (`.page`, `.display-heading`, `.display-number`, `.field-input`, `.chip-row`, animation classes for `animate.enter/leave`).
+- **Mixins** — `_mixins.scss` (`jelly`, `respond`, `card`, `display-heading`, `line-clamp`, …). Use in component SCSS with `@use 'mixins';`.
+- **Global classes** — `_utilities.scss` (`.page`, `.stat-row`, `.jelly`, `.display-heading`, `.display-number`, `.field-input`, `.chip-row`, animation classes for `animate.enter/leave`).
+
+### Jelly surfaces (design language)
+
+All lime/pink accents (buttons, selected chips, active nav tab, checkmarks, calendar days, chart bars) use one glossy "jelly" recipe: light top → saturated core → deeper base, white inner rims, a soft specular shine and a coloured glow.
+
+```scss
+@use 'mixins';
+.thing {
+  --jelly: var(--gt-color-pink);   // any colour; light/deep shades are derived
+  @include mixins.jelly;           // jelly(sm) for small dots, $glow: false to drop the halo
+}
+```
+
+Or in templates: `<span class="jelly">…</span>` (lime). Charts get the same look via the Chart.js plugins in `features/tracking/components/progress-charts/jelly-chart.plugins.ts`. Cards get a soft white + lime glow from the `--gt-shadow-card` token.
 
 ### Dark mode (prepared, not enabled)
 

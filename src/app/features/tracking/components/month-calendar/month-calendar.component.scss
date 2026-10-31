@@ -1,3 +1,5 @@
+@use 'mixins';
+
 :host {
   display: block;
 }
@@ -53,7 +55,8 @@
 }
 
 .day--active {
-  background: var(--gt-color-lime);
+  --jelly: var(--gt-color-lime);
+  @include mixins.jelly(sm);
   color: #111;
   font-weight: 700;
 }
@@ -62,17 +65,22 @@
   border-color: var(--gt-color-pink);
 }
 
+// One wide ring instead of a solid fill, so a selected workout day keeps its
+// jelly. It replaces today's pink border rather than stacking a second colour.
 .day--selected {
-  background: var(--gt-color-ink);
-  color: var(--gt-color-surface);
+  border-color: transparent;
+  outline: 3px solid var(--gt-color-ink);
+  outline-offset: 1px;
+  font-weight: 700;
 }
 
 .multi {
+  --jelly: var(--gt-color-pink);
   position: absolute;
-  top: 3px;
-  right: 3px;
-  width: 7px;
-  height: 7px;
+  top: 2px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: var(--gt-color-pink-strong);
+  @include mixins.jelly(sm, $glow: false);
 }

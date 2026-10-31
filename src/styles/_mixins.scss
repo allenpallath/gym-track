@@ -18,10 +18,37 @@
 }
 
 @mixin card($padding: 20px) {
-  background: var(--gt-color-surface);
+  @include jelly-surface;
   border-radius: var(--gt-radius-xl);
-  box-shadow: var(--gt-shadow-card);
   padding: $padding;
+}
+
+// White "jelly" for cards and other large neutral surfaces — the same glossy
+// language as the coloured jelly, adapted for white: coloured rims don't show
+// on white, so depth comes from a bright top rim, a soft top sheen and gentle
+// inner shading along the bottom and sides. Theme-aware via --gt-jelly-* tokens.
+@mixin jelly-surface($lifted: true) {
+  background:
+    radial-gradient(120% 45% at 50% 0%, var(--gt-jelly-rim), rgb(255 255 255 / 0) 70%),
+    linear-gradient(
+      180deg,
+      var(--gt-color-surface) 0%,
+      var(--gt-color-surface) 62%,
+      color-mix(in srgb, var(--gt-color-surface) 96%, var(--gt-color-ink)) 100%
+    );
+  background-origin: border-box;
+  background-repeat: no-repeat;
+
+  $shadows: (
+    inset 0 1.5px 1px var(--gt-jelly-rim),
+    inset 0 -14px 26px -14px var(--gt-jelly-shade),
+    inset 14px 0 26px -20px var(--gt-jelly-shade),
+    inset -14px 0 26px -20px var(--gt-jelly-shade)
+  );
+  @if $lifted {
+    $shadows: append($shadows, var(--gt-shadow-card), comma);
+  }
+  box-shadow: $shadows;
 }
 
 @mixin hide-scrollbar {
@@ -36,6 +63,42 @@
   -webkit-line-clamp: $lines;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+// Glossy "jelly" fill — the app's signature surface for lime/pink accents.
+// Colour comes from the --jelly custom property (set it on the element or via
+// .jelly--lime / .jelly--pink); light and deep shades are derived from it.
+//   $size: md for buttons/cards/pills, sm for small dots & checkmarks.
+//   $glow: soft coloured halo underneath.
+@mixin jelly($size: md, $glow: true) {
+  $rim: if($size == sm, 1px, 2px);
+  $spread: if($size == sm, 2px, 4px);
+
+  --jelly-light: color-mix(in srgb, var(--jelly) 40%, white);
+  --jelly-deep: color-mix(in srgb, var(--jelly) 86%, black);
+  background:
+    // specular shine near the top
+    radial-gradient(70% 40% at 50% 12%, rgb(255 255 255 / 0.5), rgb(255 255 255 / 0) 75%),
+    // saturated core
+    radial-gradient(90% 65% at 50% 55%, var(--jelly) 35%, rgb(255 255 255 / 0) 100%),
+    // light top → deep bottom body
+    linear-gradient(180deg, var(--jelly-light) 0%, var(--jelly) 30%, var(--jelly) 72%, var(--jelly-deep) 100%);
+  // Paint under the border too and never tile — otherwise elements with a
+  // (transparent) border show a seam/outline where the gradient repeats.
+  background-origin: border-box;
+  background-repeat: no-repeat;
+  border-color: transparent;
+
+  $shadows: (
+    inset 0 $rim ($rim * 2) rgb(255 255 255 / 0.6),
+    inset 0 (-$spread) ($spread * 2) rgb(255 255 255 / 0.28),
+    inset $spread 0 ($spread * 2) rgb(255 255 255 / 0.18),
+    inset (-$spread) 0 ($spread * 2) rgb(255 255 255 / 0.18)
+  );
+  @if $glow {
+    $shadows: append($shadows, 0 ($spread * 1.5) ($spread * 4) (-$spread) color-mix(in srgb, var(--jelly) 70%, transparent), comma);
+  }
+  box-shadow: $shadows;
 }
 
 @mixin focus-ring {

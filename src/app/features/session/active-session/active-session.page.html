@@ -46,7 +46,7 @@
   </div>
 
   <footer class="bottom-bar">
-    <button appButton variant="danger" size="lg" type="button" (click)="discard()">Discard</button>
+    <button appButton variant="pink" size="lg" type="button" (click)="discard()">Discard</button>
     <button appButton variant="accent" size="lg" type="button" class="finish" [disabled]="finishing()" (click)="finish()">
       <lucide-icon [img]="icons.Flag" [size]="18" /> {{ finishing() ? 'Saving…' : 'Finish workout' }}
     </button>

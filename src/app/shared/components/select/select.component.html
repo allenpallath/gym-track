@@ -1,0 +1,86 @@
+@if (label()) {
+  <span class="label" [id]="uid + '-label'">{{ label() }}</span>
+}
+
+<button
+  #trigger
+  cdkOverlayOrigin
+  #origin="cdkOverlayOrigin"
+  type="button"
+  class="trigger"
+  role="combobox"
+  aria-haspopup="listbox"
+  [class.trigger--open]="open()"
+  [disabled]="disabled()"
+  [attr.aria-expanded]="open()"
+  [attr.aria-controls]="open() ? uid + '-listbox' : null"
+  [attr.aria-labelledby]="label() ? uid + '-label ' + uid + '-value' : null"
+  [attr.aria-label]="label() ? null : ariaLabel() || placeholder()"
+  (click)="toggle(trigger)"
+  (keydown)="onTriggerKeydown($event, trigger)"
+>
+  <span class="value" [id]="uid + '-value'" [class.value--placeholder]="!selectedLabel()">
+    {{ selectedLabel() ?? placeholder() }}
+  </span>
+  <lucide-icon class="chevron" [img]="icons.ChevronDown" [size]="18" />
+</button>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayOpen]="open()"
+  [cdkConnectedOverlayWidth]="panelWidth()"
+  [cdkConnectedOverlayPositions]="positions"
+  [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+  (backdropClick)="close()"
+  (detach)="close()"
+>
+  <div class="panel" cdkTrapFocus [cdkTrapFocusAutoCapture]="true" animate.enter="select-panel-in" (keydown)="onPanelKeydown($event)">
+    @if (searchable()) {
+      <!-- Focus trap auto-captures the first tabbable element, i.e. this field's input. -->
+      <div class="search">
+        <app-search-field
+          compact
+          placeholder="Search…"
+          ariaLabel="Filter options"
+          [ariaControls]="uid + '-listbox'"
+          [ariaActiveDescendant]="activeId()"
+          [value]="query()"
+          (valueChange)="onQueryChange($event)"
+        />
+      </div>
+    }
+
+    <ul
+      class="list"
+      role="listbox"
+      [id]="uid + '-listbox'"
+      [attr.tabindex]="searchable() ? -1 : 0"
+      [attr.cdkFocusInitial]="searchable() ? null : ''"
+      [attr.aria-activedescendant]="searchable() ? null : activeId()"
+      [attr.aria-label]="label() || ariaLabel() || placeholder()"
+    >
+      @for (option of viewOptions(); track option.id; let i = $index) {
+        <li
+          role="option"
+          class="option"
+          [id]="option.id"
+          [class.option--active]="i === activeIndex()"
+          [class.option--selected]="option.selected"
+          [attr.aria-selected]="option.selected"
+          (click)="choose(option.value)"
+          (mouseenter)="activeIndex.set(i)"
+        >
+          <span class="option-label">{{ option.label }}</span>
+          @if (option.selected) {
+            <span class="check"><lucide-icon [img]="icons.Check" [size]="14" /></span>
+          }
+        </li>
+      } @empty {
+        <li class="empty">No matches</li>
+      }
+    </ul>
+  </div>
+</ng-template>

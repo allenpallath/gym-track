@@ -1,6 +1,7 @@
 import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-export type ButtonVariant = 'primary' | 'accent' | 'pink' | 'outline' | 'ghost' | 'danger';
+/** `pink` doubles as the destructive style (discard, delete). */
+export type ButtonVariant = 'primary' | 'accent' | 'pink' | 'outline' | 'ghost';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 /**

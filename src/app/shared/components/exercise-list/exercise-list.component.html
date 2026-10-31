@@ -1,19 +1,5 @@
 <div class="search">
-  <lucide-icon class="search-icon" [img]="icons.Search" [size]="18" />
-  <input
-    class="field-input search-input"
-    type="search"
-    placeholder="Search 870+ exercises"
-    aria-label="Search exercises"
-    enterkeyhint="search"
-    [value]="query()"
-    (input)="onQueryInput($event)"
-  />
-  @if (query()) {
-    <button class="clear" type="button" aria-label="Clear search" (click)="clearQuery()">
-      <lucide-icon [img]="icons.X" [size]="16" />
-    </button>
-  }
+  <app-search-field class="search-field" placeholder="Search 870+ exercises" ariaLabel="Search exercises" [(value)]="query" />
   <button
     appButton
     variant="outline"
@@ -57,7 +43,13 @@
 
 <p class="count caption">
   @if (status() === 'ready') {
-    {{ results().length }} exercises
+    @if (onlyCloseMatches()) {
+      No exact matches · showing {{ closeMatches() }} close {{ closeMatches() === 1 ? 'match' : 'matches' }}
+    } @else if (closeMatches()) {
+      {{ results().length - closeMatches() }} exercises + {{ closeMatches() }} close matches
+    } @else {
+      {{ results().length }} exercises
+    }
   }
 </p>
 

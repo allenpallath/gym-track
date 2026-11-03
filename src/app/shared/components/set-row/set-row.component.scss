@@ -4,7 +4,7 @@
   display: grid;
   grid-template-columns: 32px 1fr 1fr 32px;
   align-items: center;
-  gap: 8px;
+  column-gap: 8px;
   padding: 4px 6px;
   border-radius: var(--gt-radius-md);
   transition: background-color 160ms ease;
@@ -23,10 +23,25 @@
   place-items: center;
   width: 28px;
   height: 28px;
+  padding: 0;
+  border: 0;
   border-radius: 50%;
   background: var(--gt-color-surface-muted);
+  color: var(--gt-color-ink);
+  font: inherit;
   font-size: 0.8rem;
   font-weight: 700;
+  cursor: pointer;
+}
+
+.badge--warmup {
+  background: var(--gt-color-pink-soft);
+  color: var(--gt-color-pink-strong);
+}
+
+.kg {
+  position: relative;
+  min-width: 0;
 }
 
 .num {
@@ -36,6 +51,27 @@
   font-variant-numeric: tabular-nums;
   background: var(--gt-color-surface-muted);
   border-color: transparent;
+}
+
+.num--with-plates {
+  padding-right: 26px;
+}
+
+.plates {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  translate: 0 -50%;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--gt-color-surface);
+  color: var(--gt-color-muted);
+  cursor: pointer;
 }
 
 .check,
@@ -71,4 +107,14 @@
   &:hover {
     color: var(--gt-color-pink-strong);
   }
+}
+
+// Spans the kg + reps columns, directly under them.
+.hint {
+  grid-column: 2 / 4;
+  padding-top: 2px;
+  font-size: 0.7rem;
+  color: var(--gt-color-muted);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
 }

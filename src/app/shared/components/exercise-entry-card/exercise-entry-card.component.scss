@@ -1,12 +1,113 @@
 @use 'mixins';
 
 :host {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 4px;
   padding: 14px 12px 8px;
   @include mixins.jelly-surface;
   border-radius: var(--gt-radius-xl);
+}
+
+// Superset bracket: a lime bar in the page gutter joining consecutive cards.
+// It reaches 12px past the card to bridge the list gap (see `.entries` gap).
+:host(.ss-start)::before,
+:host(.ss-middle)::before,
+:host(.ss-end)::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  width: 4px;
+  border-radius: 2px;
+  --jelly: var(--gt-color-lime);
+  @include mixins.jelly(sm, $glow: false);
+}
+
+:host(.ss-start)::before {
+  top: 24px;
+  bottom: -12px;
+}
+
+:host(.ss-middle)::before {
+  top: -12px;
+  bottom: -12px;
+}
+
+:host(.ss-end)::before {
+  top: -12px;
+  bottom: 24px;
+}
+
+.ss-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  margin: -4px 0 6px 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gt-color-lime-strong);
+}
+
+.suggestion {
+  --jelly: var(--gt-color-lime);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  align-self: flex-start;
+  max-width: 100%;
+  margin: 0 4px 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  @include mixins.jelly(sm, $glow: false);
+  color: #111;
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.progression {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 4px 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--gt-color-line);
+}
+
+.prog-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--gt-color-muted);
+}
+
+.prog-policy {
+  flex: 1 1 150px;
+}
+
+.prog-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: var(--gt-color-muted);
+}
+
+.prog-num {
+  width: 52px;
+  height: 36px;
+  padding: 0 6px;
+  text-align: center;
+  background: var(--gt-color-surface-muted);
+  border-color: transparent;
 }
 
 .head {

@@ -11,8 +11,9 @@ import {
   signal,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { LucideAngularModule, CalendarDays } from 'lucide-angular';
+import { LucideAngularModule, CalendarDays, Trophy } from 'lucide-angular';
 import { SessionStore } from '@core/state/session.store';
+import { BodyWeightStore } from '@core/state/body-weight.store';
 import { addMonths, startOfMonth, toDayKey } from '@core/utils/date.utils';
 import { WorkoutSession } from '@shared/models';
 import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
@@ -26,6 +27,7 @@ import { VolumePipe } from '@shared/pipes/volume.pipe';
 import { MonthCalendarComponent } from '../components/month-calendar/month-calendar.component';
 import { SessionCardComponent } from '../components/session-card/session-card.component';
 import { ProgressChartsComponent } from '../components/progress-charts/progress-charts.component';
+import { BodyWeightChartComponent } from '../components/body-weight-chart/body-weight-chart.component';
 
 @Component({
   selector: 'app-history-page',
@@ -42,6 +44,7 @@ import { ProgressChartsComponent } from '../components/progress-charts/progress-
     MonthCalendarComponent,
     SessionCardComponent,
     ProgressChartsComponent,
+    BodyWeightChartComponent,
   ],
   templateUrl: './history.page.html',
   styleUrl: './history.page.scss',
@@ -49,6 +52,7 @@ import { ProgressChartsComponent } from '../components/progress-charts/progress-
 })
 export class HistoryPage {
   private readonly store = inject(SessionStore);
+  private readonly bodyWeight = inject(BodyWeightStore);
   private readonly confirm = inject(ConfirmService);
   private readonly document = inject(DOCUMENT);
   private readonly injector = inject(Injector);
@@ -57,8 +61,11 @@ export class HistoryPage {
   readonly session = input<string>();
 
   protected readonly calendarIcon = CalendarDays;
+  protected readonly trophyIcon = Trophy;
   protected readonly loaded = this.store.loaded;
   protected readonly sessions = this.store.sessions;
+  protected readonly bodyWeightEntries = this.bodyWeight.entries;
+  protected readonly bodyWeightLoaded = this.bodyWeight.loaded;
 
   protected readonly viewMonth = signal(startOfMonth(new Date()));
   protected readonly selectedDay = signal<string | null>(null);
@@ -82,11 +89,13 @@ export class HistoryPage {
   protected readonly monthStats = computed(() => {
     let durationSec = 0;
     let volume = 0;
+    let prs = 0;
     for (const s of this.monthSessions()) {
       durationSec += s.durationSec;
       volume += s.totalVolume;
+      prs += s.prs?.length ?? 0;
     }
-    return { count: this.monthSessions().length, durationSec, volume };
+    return { count: this.monthSessions().length, durationSec, volume, prs };
   });
 
   protected readonly visibleSessions = computed<WorkoutSession[]>(() => {
@@ -107,6 +116,7 @@ export class HistoryPage {
 
   constructor() {
     void this.store.load();
+    void this.bodyWeight.load();
 
     // Once sessions are loaded, jump to the session passed in the query param (once per id).
     effect(() => {

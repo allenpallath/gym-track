@@ -2,14 +2,22 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { environment } from '@env/environment';
-import { Exercise, Routine, WorkoutSession } from '@shared/models';
-import { ExerciseRepository, RoutineRepository, SessionRepository } from '../repositories';
+import { AppSettings, BodyWeightEntry, Exercise, Routine, WorkoutSession } from '@shared/models';
+import {
+  BodyWeightRepository,
+  ExerciseRepository,
+  RoutineRepository,
+  SessionRepository,
+  SettingsRepository,
+} from '../repositories';
 
 // REST implementations, activated by `environment.dataSource = 'api'`.
 // Expected endpoints (JSON bodies use the same shapes as shared/models):
 //   GET    /exercises
 //   GET    /routines      PUT /routines/:id (upsert)      DELETE /routines/:id
 //   GET    /sessions      PUT /sessions/:id (upsert)      DELETE /sessions/:id
+//   GET    /bodyweight    PUT /bodyweight/:id (upsert)    DELETE /bodyweight/:id
+//   GET    /settings (JSON or null)                       PUT /settings
 
 @Injectable()
 export class HttpExerciseRepository extends ExerciseRepository {
@@ -53,5 +61,37 @@ export class HttpSessionRepository extends SessionRepository {
 
   delete(id: string): Observable<void> {
     return this.http.delete(`${this.url}/${encodeURIComponent(id)}`).pipe(map(() => undefined));
+  }
+}
+
+@Injectable()
+export class HttpBodyWeightRepository extends BodyWeightRepository {
+  private readonly http = inject(HttpClient);
+  private readonly url = `${environment.apiBaseUrl}/bodyweight`;
+
+  getAll(): Observable<BodyWeightEntry[]> {
+    return this.http.get<BodyWeightEntry[]>(this.url);
+  }
+
+  save(entry: BodyWeightEntry): Observable<BodyWeightEntry> {
+    return this.http.put<BodyWeightEntry>(`${this.url}/${encodeURIComponent(entry.id)}`, entry);
+  }
+
+  delete(id: string): Observable<void> {
+    return this.http.delete(`${this.url}/${encodeURIComponent(id)}`).pipe(map(() => undefined));
+  }
+}
+
+@Injectable()
+export class HttpSettingsRepository extends SettingsRepository {
+  private readonly http = inject(HttpClient);
+  private readonly url = `${environment.apiBaseUrl}/settings`;
+
+  get(): Observable<AppSettings | null> {
+    return this.http.get<AppSettings | null>(this.url);
+  }
+
+  save(settings: AppSettings): Observable<AppSettings> {
+    return this.http.put<AppSettings>(this.url, settings);
   }
 }

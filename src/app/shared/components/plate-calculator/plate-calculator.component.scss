@@ -1,0 +1,80 @@
+@use 'mixins';
+
+.target {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 0 4px 16px;
+}
+
+.bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 120px;
+  padding: 0 12px;
+  border-radius: var(--gt-radius-lg);
+  @include mixins.jelly-surface($lifted: false);
+}
+
+// The bar runs behind the discs as a thin grey line.
+.bar::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 50%;
+  height: 8px;
+  translate: 0 -50%;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #d4d5d9, #a6a7ab);
+}
+
+.sleeve,
+.collar {
+  position: relative;
+  flex-shrink: 0;
+  width: 10px;
+  height: 22px;
+  border-radius: 3px;
+  background: #8d8e93;
+}
+
+.sleeve {
+  margin-right: 6px;
+}
+
+.collar {
+  margin-left: 2px;
+}
+
+.disc {
+  position: relative;
+  flex-shrink: 0;
+  width: 16px;
+  border-radius: 6px;
+  @include mixins.jelly(sm, $glow: false);
+}
+
+.disc--pink {
+  --jelly: var(--gt-color-pink);
+}
+
+.disc--lime {
+  --jelly: var(--gt-color-lime);
+}
+
+.disc--neutral {
+  --jelly: #c4c5ca;
+}
+
+.per-side {
+  margin: 16px 4px 4px;
+}
+
+.warn {
+  margin: 8px 4px 0;
+  font-size: 0.85rem;
+  color: var(--gt-color-pink-strong);
+}

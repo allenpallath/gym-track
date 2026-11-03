@@ -8,9 +8,14 @@
 
 <app-card padding="lg">
   <h2 class="display-heading">Exercise progress</h2>
-  <p class="caption">Heaviest completed set per session</p>
+  <p class="caption">{{ metricCaption() }}</p>
 
   @if (exercises().length) {
+    <div class="toggle" role="group" aria-label="Chart metric">
+      <button appChip type="button" [selected]="metric() === 'weight'" (click)="metric.set('weight')">Heaviest</button>
+      <button appChip type="button" [selected]="metric() === 'e1rm'" (click)="metric.set('e1rm')">Est. 1RM</button>
+    </div>
+
     <app-select
       class="select"
       ariaLabel="Exercise"

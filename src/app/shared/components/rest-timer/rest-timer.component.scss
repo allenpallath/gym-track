@@ -1,0 +1,75 @@
+@use 'mixins';
+
+:host {
+  display: contents;
+}
+
+// Host is `display: contents`, so the pill is a direct flex item of the parent bar.
+.pill {
+  --jelly: var(--gt-color-lime);
+  flex: 1 0 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 6px 6px 8px;
+  border-radius: 999px;
+  @include mixins.jelly;
+  color: #111;
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.55);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.05;
+}
+
+.label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.time {
+  font-family: var(--gt-font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.adjust,
+.skip {
+  display: grid;
+  place-items: center;
+  height: 36px;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.55);
+  color: #111;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.adjust {
+  min-width: 46px;
+  padding: 0 8px;
+}
+
+.skip {
+  width: 36px;
+  background: #111;
+  color: var(--gt-color-lime);
+}

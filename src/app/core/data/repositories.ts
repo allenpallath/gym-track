@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { Exercise, Routine, WorkoutSession } from '@shared/models';
+import { AppSettings, BodyWeightEntry, Exercise, Routine, WorkoutSession } from '@shared/models';
 
 // Data-access contracts. Components and stores depend only on these abstract
 // classes (they double as DI tokens). Implementations live in `local/` (IndexedDB)
@@ -21,4 +21,17 @@ export abstract class SessionRepository {
   abstract getAll(): Observable<WorkoutSession[]>;
   abstract save(session: WorkoutSession): Observable<WorkoutSession>;
   abstract delete(id: string): Observable<void>;
+}
+
+export abstract class BodyWeightRepository {
+  abstract getAll(): Observable<BodyWeightEntry[]>;
+  /** Upsert; at most one entry per date. */
+  abstract save(entry: BodyWeightEntry): Observable<BodyWeightEntry>;
+  abstract delete(id: string): Observable<void>;
+}
+
+export abstract class SettingsRepository {
+  /** `null` until the user changes something (callers fall back to defaults). */
+  abstract get(): Observable<AppSettings | null>;
+  abstract save(settings: AppSettings): Observable<AppSettings>;
 }

@@ -1,0 +1,33 @@
+@let sum = summary();
+
+<app-card padding="lg">
+  @if (sum.latest; as latest) {
+    <div class="head">
+      <div>
+        <span class="caption">Latest</span>
+        <p class="value"><span class="display-number">{{ latest.kg | number: '1.0-1' }}</span> kg</p>
+      </div>
+      @if (sum.change30 !== null) {
+        <span class="change" [class.change--up]="sum.change30 > 0">
+          <lucide-icon [img]="sum.change30 > 0 ? icons.TrendingUp : icons.TrendingDown" [size]="14" />
+          {{ sum.change30 > 0 ? '+' : '' }}{{ sum.change30 | number: '1.0-1' }} kg · 30 days
+        </span>
+      }
+    </div>
+
+    @if (sum.points.length > 1) {
+      <div class="chart">
+        <canvas baseChart type="line" [data]="chartData()" [options]="options" [plugins]="plugins"></canvas>
+      </div>
+    } @else {
+      <p class="caption empty">Log a few more days to see your trend for the last {{ windowDays }} days.</p>
+    }
+    <a appButton variant="outline" size="sm" routerLink="/settings" class="log">Log weight</a>
+  } @else {
+    <div class="empty-state">
+      <span class="badge"><lucide-icon [img]="icons.Scale" [size]="22" /></span>
+      <p class="caption">Track your body weight to see the trend here.</p>
+      <a appButton variant="accent" size="sm" routerLink="/settings">Log your weight</a>
+    </div>
+  }
+</app-card>

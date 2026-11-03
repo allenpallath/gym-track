@@ -56,7 +56,7 @@ export class ExerciseListComponent {
   protected readonly equipmentTypes = EQUIPMENT_TYPES;
   protected readonly levels = EXERCISE_LEVELS;
   /** Must match `.row` height + gap in the SCSS. */
-  protected readonly itemSize = 108;
+  protected readonly itemSize = 100;
 
   protected readonly query = signal('');
   protected readonly muscle = signal<MuscleGroup | null>(null);

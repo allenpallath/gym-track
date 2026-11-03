@@ -3,8 +3,11 @@ import { Router, RouterLink } from '@angular/router';
 import { LucideAngularModule, Dumbbell, Play, Plus, SearchX, Trash2 } from 'lucide-angular';
 import { RoutineStore } from '@core/state/routine.store';
 import { SessionLauncherService } from '@core/state/session-launcher.service';
+import { SettingsStore } from '@core/state/settings.store';
+import { joinNext, leaveSuperset, supersetPositions } from '@core/training/supersets';
 import { addSet, createEntry, moveEntry, removeEntry, removeSet, updateSet } from '@core/utils/workout.utils';
-import { Exercise, ExerciseEntry, Routine } from '@shared/models';
+import { Exercise, ExerciseEntry, ProgressionRule, Routine } from '@shared/models';
+import { PlateCalculatorComponent } from '@shared/components/plate-calculator/plate-calculator.component';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { EmptyStateComponent } from '@shared/components/empty-state/empty-state.component';
 import {
@@ -29,6 +32,7 @@ import { HasUnsavedChanges } from '../unsaved-changes.guard';
     ExerciseEntryCardComponent,
     ExercisePickerComponent,
     PageHeaderComponent,
+    PlateCalculatorComponent,
     TextFieldComponent,
   ],
   templateUrl: './routine-editor.page.html',
@@ -40,6 +44,10 @@ export class RoutineEditorPage implements OnInit, HasUnsavedChanges {
   private readonly launcher = inject(SessionLauncherService);
   private readonly router = inject(Router);
   private readonly confirm = inject(ConfirmService);
+  private readonly settingsStore = inject(SettingsStore);
+
+  protected readonly settings = this.settingsStore.settings;
+  protected readonly platesFor = signal<number | null>(null);
 
   /** Bound from the `:id` route param; undefined on `/routines/new`. */
   readonly id = input<string>();
@@ -61,6 +69,7 @@ export class RoutineEditorPage implements OnInit, HasUnsavedChanges {
     () => new Set(this.exercises().map((e) => e.exerciseId)),
   );
   protected readonly totalSets = computed(() => this.exercises().reduce((sum, e) => sum + e.sets.length, 0));
+  protected readonly supersets = computed(() => supersetPositions(this.exercises()));
   protected readonly canSave = computed(
     () => this.name().trim().length > 0 && this.exercises().length > 0 && !this.saving(),
   );
@@ -74,6 +83,7 @@ export class RoutineEditorPage implements OnInit, HasUnsavedChanges {
   );
 
   async ngOnInit(): Promise<void> {
+    void this.settingsStore.load();
     await this.store.load();
     const id = this.id();
     const routine = id ? this.store.byId().get(id) : this.store.createDraft();
@@ -111,6 +121,14 @@ export class RoutineEditorPage implements OnInit, HasUnsavedChanges {
 
   protected onRemoved(entryId: string): void {
     this.exercises.update((list) => removeEntry(list, entryId));
+  }
+
+  protected onSuperset(entryId: string, action: 'join' | 'leave'): void {
+    this.exercises.update((list) => (action === 'join' ? joinNext(list, entryId) : leaveSuperset(list, entryId)));
+  }
+
+  protected onProgression(entryId: string, rule: ProgressionRule): void {
+    this.exercises.update((list) => list.map((e) => (e.id === entryId ? { ...e, progression: rule } : e)));
   }
 
   protected async save(): Promise<void> {

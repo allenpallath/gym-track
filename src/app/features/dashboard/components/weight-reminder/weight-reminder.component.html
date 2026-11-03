@@ -1,0 +1,28 @@
+<!-- Closing the sheet any way (X, backdrop, Escape) counts as "remind me later". -->
+<app-bottom-sheet title="Weigh-in time" (closed)="snoozed.emit()">
+  <div class="body">
+    <span class="badge"><lucide-icon [img]="scaleIcon" [size]="26" /></span>
+    <p class="caption message">{{ message() }}</p>
+
+    <form class="field" (submit)="$event.preventDefault(); submit()">
+      <input
+        class="field-input input"
+        type="text"
+        inputmode="decimal"
+        enterkeyhint="done"
+        aria-label="Body weight in kilograms"
+        placeholder="Weight"
+        [value]="value()"
+        (input)="onInput($event)"
+      />
+      <span class="unit">kg</span>
+    </form>
+
+    <div class="actions">
+      <button appButton variant="outline" size="lg" type="button" (click)="snoozed.emit()">Remind me later</button>
+      <button appButton variant="accent" size="lg" type="button" [disabled]="kg() === null || saving()" (click)="submit()">
+        {{ saving() ? 'Saving…' : 'Log weight' }}
+      </button>
+    </div>
+  </div>
+</app-bottom-sheet>

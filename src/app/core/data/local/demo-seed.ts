@@ -1,5 +1,6 @@
 import { addDays, startOfDay } from '@core/utils/date.utils';
 import { computeTotals } from '@core/utils/workout.utils';
+import { detectPrs } from '@core/training/records';
 import { ExerciseEntry, Routine, WorkoutSession, WorkoutSet } from '@shared/models';
 import { GymTrackDb } from './gym-track-db';
 
@@ -105,6 +106,7 @@ function buildEntries(routine: DemoRoutine, week: number, rand: () => number, li
       exerciseName: ex.name,
       image: `${ex.id}/0.jpg`,
       sets,
+      ...(ex.weight !== null ? { progression: { policy: 'linear' as const, incrementKg: ex.weeklyGain >= 2.5 ? 2.5 : 1.25 } } : {}),
     };
   });
 }
@@ -163,6 +165,13 @@ function buildDemoData(today = new Date()): { routines: Routine[]; sessions: Wor
     updatedAt: lastPerformed.get(routine.key) ?? createdAt,
     lastPerformedAt: lastPerformed.get(routine.key) ?? null,
   }));
+
+  // Mark PRs the way finishing a real workout would: oldest first, against earlier sessions.
+  sessions.sort((a, b) => a.startedAt.localeCompare(b.startedAt));
+  sessions.forEach((session, i) => {
+    const prs = detectPrs(session.exercises, sessions.slice(0, i));
+    if (prs.length) session.prs = prs;
+  });
 
   return { routines, sessions };
 }

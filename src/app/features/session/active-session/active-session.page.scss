@@ -115,6 +115,11 @@
   padding-bottom: calc(110px + env(safe-area-inset-bottom));
 }
 
+// Room for the rest-timer row that appears above the bottom buttons.
+.body--resting {
+  padding-bottom: calc(172px + env(safe-area-inset-bottom));
+}
+
 .entries {
   display: flex;
   flex-direction: column;
@@ -132,6 +137,7 @@
   bottom: 0;
   z-index: 30;
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   max-width: 720px;
   margin: 0 auto;

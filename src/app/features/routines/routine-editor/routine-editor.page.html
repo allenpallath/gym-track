@@ -28,17 +28,22 @@
       </div>
 
       <div class="entries">
-        @for (entry of exercises(); track entry.id; let first = $first, last = $last) {
+        @for (entry of exercises(); track entry.id; let i = $index, first = $first, last = $last) {
           <app-exercise-entry-card
             [entry]="entry"
             mode="plan"
             [isFirst]="first"
             [isLast]="last"
+            [superset]="supersets()[i]"
+            [barKg]="settings().barKg"
             (setChanged)="onSetChanged(entry.id, $event)"
             (setAdded)="onSetAdded(entry.id)"
             (setRemoved)="onSetRemoved(entry.id, $event)"
             (moved)="onMoved(entry.id, $event)"
             (removed)="onRemoved(entry.id)"
+            (supersetChanged)="onSuperset(entry.id, $event)"
+            (progressionChanged)="onProgression(entry.id, $event)"
+            (platesRequested)="platesFor.set($event)"
           />
         } @empty {
           <app-empty-state
@@ -69,4 +74,12 @@
 
 @if (pickerOpen()) {
   <app-exercise-picker [addedIds]="addedIds()" (added)="addExercise($event)" (closed)="pickerOpen.set(false)" />
+}
+@if (platesFor(); as target) {
+  <app-plate-calculator
+    [targetKg]="target"
+    [barKg]="settings().barKg"
+    [platesKg]="settings().platesKg"
+    (closed)="platesFor.set(null)"
+  />
 }

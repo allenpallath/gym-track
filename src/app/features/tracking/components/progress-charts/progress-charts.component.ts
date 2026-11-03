@@ -1,48 +1,27 @@
-import { ChangeDetectionStrategy, Component, computed, DOCUMENT, inject, input, linkedSignal } from '@angular/core';
-import { BaseChartDirective, provideCharts } from 'ng2-charts';
-import {
-  BarController,
-  BarElement,
-  CategoryScale,
-  ChartConfiguration,
-  Filler,
-  LinearScale,
-  LineController,
-  LineElement,
-  PointElement,
-  Tooltip,
-} from 'chart.js';
+import { ChangeDetectionStrategy, Component, computed, DOCUMENT, inject, input, linkedSignal, signal } from '@angular/core';
+import { BaseChartDirective } from 'ng2-charts';
+import { ChartConfiguration } from 'chart.js';
 import { WorkoutSession } from '@shared/models';
 import { CardComponent } from '@shared/components/card/card.component';
+import { ChipComponent } from '@shared/components/chip/chip.component';
 import { SelectComponent, SelectOption } from '@shared/components/select/select.component';
-import { exerciseProgress, loggedExercises, weeklyVolume } from '../../tracking.utils';
+import { exerciseProgress, loggedExercises, ProgressMetric, weeklyVolume } from '../../tracking.utils';
 import { jellyBarsPlugin, jellyGlowPlugin, withAlpha } from './jelly-chart.plugins';
+import { chartOptions, jellyLineDataset, provideGymCharts, readThemeColors } from './chart-theme';
 
 const WEEKS = 8;
 const BAR_RADIUS = 10;
 
-/**
- * Chart.js is registered here (not app-wide) and this component is only
- * rendered inside `@defer`, so the charting code ships in a lazy chunk.
- */
+const METRIC_CAPTION: Record<ProgressMetric, string> = {
+  weight: 'Heaviest working set per session',
+  e1rm: 'Best estimated 1RM per session (Epley)',
+};
+
+/** Weekly volume + per-exercise progress. Only rendered inside `@defer`, so Chart.js stays lazy. */
 @Component({
   selector: 'app-progress-charts',
-  imports: [BaseChartDirective, CardComponent, SelectComponent],
-  providers: [
-    provideCharts({
-      registerables: [
-        BarController,
-        BarElement,
-        LineController,
-        LineElement,
-        PointElement,
-        CategoryScale,
-        LinearScale,
-        Tooltip,
-        Filler,
-      ],
-    }),
-  ],
+  imports: [BaseChartDirective, CardComponent, ChipComponent, SelectComponent],
+  providers: [provideGymCharts()],
   templateUrl: './progress-charts.component.html',
   styleUrl: './progress-charts.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,6 +30,9 @@ export class ProgressChartsComponent {
   readonly sessions = input.required<WorkoutSession[]>();
 
   private readonly colors = readThemeColors(inject(DOCUMENT));
+
+  protected readonly metric = signal<ProgressMetric>('weight');
+  protected readonly metricCaption = computed(() => METRIC_CAPTION[this.metric()]);
 
   protected readonly exercises = computed(() => loggedExercises(this.sessions()));
   protected readonly exerciseOptions = computed<SelectOption<string>[]>(() =>
@@ -81,74 +63,20 @@ export class ProgressChartsComponent {
 
   protected readonly progressPoints = computed(() => {
     const id = this.selectedExerciseId();
-    return id ? exerciseProgress(this.sessions(), id) : [];
+    return id ? exerciseProgress(this.sessions(), id, this.metric()) : [];
   });
 
   protected readonly progressData = computed<ChartConfiguration<'line'>['data']>(() => {
     const points = this.progressPoints();
     return {
       labels: points.map((p) => p.label),
-      datasets: [
-        {
-          data: points.map((p) => p.weight),
-          borderColor: this.colors.pink,
-          borderWidth: 3,
-          // Pink wash that fades out towards the axis.
-          backgroundColor: ({ chart }) => {
-            const area = chart.chartArea;
-            if (!area) return this.colors.pinkSoft;
-            const gradient = chart.ctx.createLinearGradient(0, area.top, 0, area.bottom);
-            gradient.addColorStop(0, withAlpha(this.colors.pink, 0.35));
-            gradient.addColorStop(1, withAlpha(this.colors.pink, 0));
-            return gradient;
-          },
-          pointBackgroundColor: '#fff',
-          pointBorderColor: this.colors.pink,
-          pointBorderWidth: 3,
-          pointRadius: 4,
-          tension: 0.35,
-          fill: true,
-        },
-      ],
+      datasets: [jellyLineDataset(points.map((p) => p.value), this.colors.pink, this.colors.pink)],
     };
   });
 
   protected readonly barPlugins = [jellyGlowPlugin<'bar'>(withAlpha(this.colors.lime, 0.55)), jellyBarsPlugin(BAR_RADIUS)];
   protected readonly linePlugins = [jellyGlowPlugin<'line'>(withAlpha(this.colors.pink, 0.45), 12)];
 
-  protected readonly barOptions: ChartConfiguration<'bar'>['options'] = this.baseOptions();
-  protected readonly lineOptions: ChartConfiguration<'line'>['options'] = this.baseOptions();
-
-  private baseOptions() {
-    const { muted, line } = this.colors;
-    return {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: (ctx: { parsed: { y: number | null } }) => `${ctx.parsed.y ?? 0} kg` } },
-      },
-      scales: {
-        x: { grid: { display: false }, border: { display: false }, ticks: { color: muted, font: { size: 11 } } },
-        y: {
-          beginAtZero: true,
-          grid: { color: line },
-          border: { display: false },
-          ticks: { color: muted, font: { size: 11 }, maxTicksLimit: 5 },
-        },
-      },
-    };
-  }
-}
-
-function readThemeColors(doc: Document) {
-  const style = getComputedStyle(doc.documentElement);
-  const read = (name: string, fallback: string) => style.getPropertyValue(name).trim() || fallback;
-  return {
-    pink: read('--gt-color-pink', '#e27ad6'),
-    pinkSoft: read('--gt-color-pink-soft', '#fbe6f8'),
-    lime: read('--gt-color-lime', '#c9e85f'),
-    muted: read('--gt-color-muted', '#77787c'),
-    line: read('--gt-color-line', '#e4e4e7'),
-  };
+  protected readonly barOptions: ChartConfiguration<'bar'>['options'] = chartOptions(this.colors);
+  protected readonly lineOptions: ChartConfiguration<'line'>['options'] = chartOptions(this.colors);
 }

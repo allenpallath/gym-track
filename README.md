@@ -28,10 +28,13 @@ Production builds never seed.
 | Area | What it does |
 |------|--------------|
 | **Exercises** | Typo-tolerant search (Fuse.js + edit-distance re-ranking; gym slang like "abs", "db", "rdl") + filters (muscle, equipment, level) over the full catalogue with a virtual-scrolled list; detail page with animated start/end frames, muscles and instructions; add to any routine. |
-| **Routines** | Create / edit / delete routines. Each exercise has rows of sets with KG and REPS. Save from the sticky bottom bar; unsaved changes are guarded. |
-| **Session** | Start from a routine (or empty). Live timer, tick sets as done, change weights/reps, add exercises mid-workout. Survives reloads (localStorage). Finish saves the session. |
-| **History** | Month calendar with workout days, per-day session list with full set detail, weekly volume chart and per-exercise progress chart. |
-| **Home** | Last-7-days training breakdown, weekly stats, quick-start routines, recent sessions. |
+| **Routines** | Create / edit / delete routines. Each exercise has rows of sets with KG and REPS, warm-up sets, supersets, and a progression rule (off / linear / double). Unsaved changes are guarded. |
+| **Session** | Start from a routine (or empty). Targets pre-filled from the progression rule with the reason shown; "Last: 60 × 8" per set; rest timer after each working set (notification when backgrounded); plate calculator; supersets rest after the round. Finishing detects PRs (heaviest set, Epley est. 1RM) and celebrates them. Survives reloads. |
+| **History** | Month calendar, sessions with PR badges and full set detail, weekly volume chart, per-exercise progress (heaviest / est. 1RM), body-weight trend. |
+| **Home** | Last-7-days training breakdown, weekly stats, recent PRs, quick-start routines, recent sessions. |
+| **Settings** | Body-weight log, default rest + notifications, plate calculator bar/plates, CSV export (Strong-compatible) and import (GymTrack / Strong / Hevy). |
+
+Training logic lives in `src/app/core/training/` as pure functions (`one-rep-max`, `performance`, `records`, `progression`, `plates`, `supersets`). Ideas were inspired by openGym (AGPL); no code was copied.
 
 ## Architecture
 
@@ -83,8 +86,10 @@ Component ──reads signals──▶ Store (core/state) ──Observable──
    | Method | Path | |
    |---|---|---|
    | GET | `/exercises` | catalogue |
-   | GET / PUT / DELETE | `/routines`, `/routines/:id` | PUT is an upsert |
-   | GET / PUT / DELETE | `/sessions`, `/sessions/:id` | PUT is an upsert |
+   | GET | `/routines` | list |
+   | PUT / DELETE | `/routines/:id` | PUT is an upsert |
+   | GET | `/sessions` | list |
+   | PUT / DELETE | `/sessions/:id` | PUT is an upsert |
 
 Nothing else changes — `provideDataLayer()` binds the `Http*` repositories instead of the local ones.
 

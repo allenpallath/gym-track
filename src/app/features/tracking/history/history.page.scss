@@ -1,3 +1,5 @@
+@use 'mixins';
+
 :host {
   display: block;
 }
@@ -10,6 +12,20 @@
 
 .stat-row {
   margin-top: 12px;
+}
+
+.pr-chip {
+  --jelly: var(--gt-color-pink);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  @include mixins.jelly(sm, $glow: false);
+  color: #111;
+  font-size: 0.78rem;
+  font-weight: 600;
 }
 
 .list {
@@ -28,6 +44,10 @@
   background: linear-gradient(90deg, var(--gt-color-surface) 25%, var(--gt-color-surface-muted) 50%, var(--gt-color-surface) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s linear infinite;
+}
+
+.skeleton--short {
+  height: 200px;
 }
 
 @keyframes shimmer {

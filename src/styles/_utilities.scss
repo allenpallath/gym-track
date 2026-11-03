@@ -62,10 +62,6 @@
   @include mixins.hide-scrollbar;
 }
 
-.line-clamp-2 {
-  @include mixins.line-clamp(2);
-}
-
 .chip-row {
   display: flex;
   gap: 8px;

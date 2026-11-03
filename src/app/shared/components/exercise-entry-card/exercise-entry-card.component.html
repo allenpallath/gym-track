@@ -1,3 +1,7 @@
+@if (superset() === 'start') {
+  <span class="ss-label"><lucide-icon [img]="icons.Link2" [size]="12" /> Superset</span>
+}
+
 <header class="head">
   <img appImgFallback class="thumb" width="48" height="48" loading="lazy" [src]="entry().image | exerciseImage" alt="" />
   <a class="name" [routerLink]="['/exercises', entry().exerciseId]">{{ entry().exerciseName }}</a>
@@ -23,6 +27,16 @@
         <button type="button" role="menuitem" [disabled]="isLast()" (click)="move(1)">
           <lucide-icon [img]="icons.ArrowDown" [size]="16" /> Move down
         </button>
+        @if (!isLast() && superset() !== 'start' && superset() !== 'middle') {
+          <button type="button" role="menuitem" (click)="changeSuperset('join')">
+            <lucide-icon [img]="icons.Link2" [size]="16" /> Superset with next
+          </button>
+        }
+        @if (inSuperset()) {
+          <button type="button" role="menuitem" (click)="changeSuperset('leave')">
+            <lucide-icon [img]="icons.Unlink2" [size]="16" /> Remove from superset
+          </button>
+        }
         <button type="button" role="menuitem" class="danger" (click)="remove()">
           <lucide-icon [img]="icons.Trash2" [size]="16" /> Remove
         </button>
@@ -30,6 +44,10 @@
     }
   </div>
 </header>
+
+@if (mode() === 'log' && suggestion()) {
+  <span class="suggestion"><lucide-icon [img]="icons.TrendingUp" [size]="13" /> {{ suggestion() }}</span>
+}
 
 <div class="cols" [class.cols--log]="mode() === 'log'">
   <span>Set</span>
@@ -41,13 +59,16 @@
   <span></span>
 </div>
 
-@for (set of entry().sets; track set.id; let i = $index) {
+@for (row of rows(); track row.set.id) {
   <app-set-row
-    [index]="i + 1"
-    [set]="set"
+    [label]="row.label"
+    [set]="row.set"
+    [hint]="row.hint"
     [mode]="mode()"
-    (changed)="setChanged.emit({ setId: set.id, patch: $event })"
-    (removed)="setRemoved.emit(set.id)"
+    [barKg]="barKg()"
+    (changed)="setChanged.emit({ setId: row.set.id, patch: $event })"
+    (removed)="setRemoved.emit(row.set.id)"
+    (platesRequested)="platesRequested.emit($event)"
   />
 } @empty {
   <p class="caption no-sets">No sets yet.</p>
@@ -56,3 +77,41 @@
 <button appButton variant="ghost" size="sm" type="button" class="add-set" (click)="setAdded.emit()">
   <lucide-icon [img]="icons.Plus" [size]="16" /> Add set
 </button>
+
+@if (mode() === 'plan') {
+  <div class="progression">
+    <span class="prog-label"><lucide-icon [img]="icons.TrendingUp" [size]="14" /> Progression</span>
+    <app-select
+      class="prog-policy"
+      ariaLabel="Progression rule"
+      [options]="policyOptions"
+      [value]="rule().policy"
+      (valueChange)="setPolicy($event)"
+    />
+    @if (rule().policy !== 'off') {
+      <label class="prog-field">
+        +<input
+          class="field-input prog-num"
+          type="text"
+          inputmode="decimal"
+          aria-label="Increase by kg"
+          [value]="rule().incrementKg"
+          (change)="setRuleNumber($event, 'incrementKg')"
+        />kg
+      </label>
+    }
+    @if (rule().policy === 'double') {
+      <label class="prog-field">
+        up to<input
+          class="field-input prog-num"
+          type="text"
+          inputmode="numeric"
+          aria-label="Top of rep range"
+          placeholder="+4"
+          [value]="rule().repMax ?? ''"
+          (change)="setRuleNumber($event, 'repMax')"
+        />reps
+      </label>
+    }
+  </div>
+}

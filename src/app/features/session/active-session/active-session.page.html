@@ -21,19 +21,25 @@
     </div>
   </header>
 
-  <div class="page body">
+  <div class="page body" [class.body--resting]="resting()">
     <div class="entries">
-      @for (entry of d.exercises; track entry.id; let first = $first, last = $last) {
+      @for (view of entryViews(); track view.entry.id; let first = $first, last = $last) {
         <app-exercise-entry-card
-          [entry]="entry"
+          [entry]="view.entry"
           mode="log"
           [isFirst]="first"
           [isLast]="last"
-          (setChanged)="onSetChanged(entry.id, $event)"
-          (setAdded)="onSetAdded(entry.id)"
-          (setRemoved)="onSetRemoved(entry.id, $event)"
-          (moved)="onMoved(entry.id, $event)"
-          (removed)="onRemoved(entry.id)"
+          [lastSets]="view.lastSets"
+          [suggestion]="view.suggestion"
+          [superset]="view.superset"
+          [barKg]="settings().barKg"
+          (setChanged)="onSetChanged(view.entry.id, $event)"
+          (setAdded)="onSetAdded(view.entry.id)"
+          (setRemoved)="onSetRemoved(view.entry.id, $event)"
+          (moved)="onMoved(view.entry.id, $event)"
+          (removed)="onRemoved(view.entry.id)"
+          (supersetChanged)="onSuperset(view.entry.id, $event)"
+          (platesRequested)="platesFor.set($event)"
         />
       } @empty {
         <app-empty-state title="Empty workout" message="Add the exercises you're doing as you go." [icon]="icons.Dumbbell" />
@@ -46,6 +52,7 @@
   </div>
 
   <footer class="bottom-bar">
+    <app-rest-timer class="rest" />
     <button appButton variant="pink" size="lg" type="button" (click)="discard()">Discard</button>
     <button appButton variant="accent" size="lg" type="button" class="finish" [disabled]="finishing()" (click)="finish()">
       <lucide-icon [img]="icons.Flag" [size]="18" /> {{ finishing() ? 'Saving…' : 'Finish workout' }}
@@ -55,7 +62,15 @@
   @if (pickerOpen()) {
     <app-exercise-picker [addedIds]="addedIds()" (added)="addExercise($event)" (closed)="pickerOpen.set(false)" />
   }
-} @else {
+  @if (platesFor(); as target) {
+    <app-plate-calculator
+      [targetKg]="target"
+      [barKg]="settings().barKg"
+      [platesKg]="settings().platesKg"
+      (closed)="platesFor.set(null)"
+    />
+  }
+} @else if (!celebrating()) {
   <div class="page">
     <div class="no-session">
       <app-empty-state title="No workout running" message="Start one from a routine, or log a freestyle workout." [icon]="icons.Timer">
@@ -67,4 +82,8 @@
       <a appButton variant="ghost" routerLink="/home">Back to home</a>
     </div>
   </div>
+}
+
+@if (celebrating(); as saved) {
+  <app-pr-summary [prs]="saved.prs ?? []" (done)="closeCelebration()" />
 }

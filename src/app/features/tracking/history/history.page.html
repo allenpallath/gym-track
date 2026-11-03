@@ -19,6 +19,12 @@
           [unit]="(monthStats().volume | volume: 'unit') + ' lifted'"
         />
       </div>
+      @if (monthStats().prs) {
+        <span class="pr-chip">
+          <lucide-icon [img]="trophyIcon" [size]="14" />
+          {{ monthStats().prs }} personal {{ monthStats().prs === 1 ? 'record' : 'records' }} this {{ monthLabel() }}
+        </span>
+      }
     </app-card>
 
     <app-card padding="lg">
@@ -54,6 +60,21 @@
         <div class="skeleton"></div>
       } @loading (minimum 200ms) {
         <div class="skeleton"></div>
+      }
+    </section>
+  }
+
+  @if (loaded()) {
+    <section class="list">
+      <h2 class="display-heading">Body weight</h2>
+      @if (bodyWeightLoaded()) {
+        @defer (on viewport) {
+          <app-body-weight-chart [entries]="bodyWeightEntries()" />
+        } @placeholder {
+          <div class="skeleton skeleton--short"></div>
+        }
+      } @else {
+        <div class="skeleton skeleton--short"></div>
       }
     </section>
   }

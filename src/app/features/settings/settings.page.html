@@ -1,0 +1,156 @@
+<div class="page">
+  <app-page-header title="Settings" [back]="true" />
+
+  <div class="sections">
+    <!-- Body weight -->
+    <app-card padding="lg">
+      <h2 class="display-heading">Body weight</h2>
+      <div class="bw-top">
+        @if (latestWeight(); as latest) {
+          <app-stat label="Latest" [value]="latest.kg" unit="kg" />
+        } @else {
+          <p class="caption">No entries yet. Log today's weight to start a trend.</p>
+        }
+      </div>
+
+      <form class="inline-form" (submit)="$event.preventDefault(); logWeight()">
+        <label class="sr-label" for="bw-input">Today's weight in kg</label>
+        <input
+          id="bw-input"
+          class="field-input"
+          type="text"
+          inputmode="decimal"
+          placeholder="Today's weight (kg)"
+          enterkeyhint="done"
+          [value]="weightInput()"
+          (input)="weightInput.set($any($event.target).value)"
+        />
+        <button appButton variant="accent" type="submit" [disabled]="!weightValid()">Log</button>
+      </form>
+
+      @if (weightRows().length) {
+        <ul class="list">
+          @for (entry of weightRows(); track entry.id) {
+            <li class="list-row">
+              <span class="caption">{{ entry.date | date: 'EEE d MMM y' }}</span>
+              <strong class="kg">{{ entry.kg }} kg</strong>
+              <button appButton variant="ghost" size="sm" iconOnly type="button" [attr.aria-label]="'Delete ' + entry.date" (click)="deleteWeight(entry)">
+                <lucide-icon [img]="icons.Trash2" [size]="16" />
+              </button>
+            </li>
+          }
+        </ul>
+        @if (weightCount() > weightRows().length || showAllWeights()) {
+          <button appButton variant="ghost" size="sm" type="button" (click)="showAllWeights.set(!showAllWeights())">
+            {{ showAllWeights() ? 'Show recent' : 'Show all ' + weightCount() }}
+          </button>
+        }
+      }
+    </app-card>
+
+    <!-- Rest timer -->
+    <app-card padding="lg">
+      <h2 class="display-heading">Rest timer</h2>
+      <p class="caption">Default rest after each set.</p>
+      <div class="chip-row options">
+        @for (sec of restOptions; track sec) {
+          <button appChip type="button" [selected]="settings().restSec === sec" (click)="setRest(sec)">{{ sec }}s</button>
+        }
+        <label class="custom" [class.custom--active]="isCustomRest()">
+          <span class="sr-label">Custom rest in seconds</span>
+          <input
+            class="field-input custom-input"
+            type="text"
+            inputmode="numeric"
+            placeholder="Custom"
+            [value]="isCustomRest() ? settings().restSec : ''"
+            (change)="setCustomRest($event)"
+          />
+          <span class="unit">s</span>
+        </label>
+      </div>
+
+      <div class="switch-row">
+        <span>
+          <strong>Notify when rest ends</strong>
+          <span class="caption block">Useful when the app is in the background.</span>
+        </span>
+        <button
+          type="button"
+          class="switch"
+          role="switch"
+          [class.switch--on]="notificationsOn()"
+          [attr.aria-checked]="notificationsOn()"
+          aria-label="Notify when rest ends"
+          (click)="toggleNotifications()"
+        >
+          <span class="knob"></span>
+        </button>
+      </div>
+      @if (notificationNote()) {
+        <p class="caption note">{{ notificationNote() }}</p>
+      }
+    </app-card>
+
+    <!-- Plate calculator -->
+    <app-card padding="lg">
+      <h2 class="display-heading">Plate calculator</h2>
+      <span class="field-label">Bar weight</span>
+      <div class="chip-row options">
+        @for (kg of barOptions; track kg) {
+          <button appChip type="button" [selected]="settings().barKg === kg" (click)="setBar(kg)">{{ kg }} kg</button>
+        }
+      </div>
+
+      <span class="field-label">Plates you have (per side)</span>
+      <div class="plates">
+        @for (kg of plateOptions; track kg) {
+          <button appChip type="button" [selected]="plateSet().has(kg)" (click)="togglePlate(kg)">{{ kg }}</button>
+        }
+      </div>
+    </app-card>
+
+    <!-- Data -->
+    <app-card padding="lg">
+      <h2 class="display-heading">Data</h2>
+      <p class="caption">CSV with one row per set — compatible with Strong. Import works with GymTrack, Strong and Hevy exports.</p>
+
+      <div class="data-actions">
+        <button appButton variant="outline" type="button" (click)="exportCsv()">
+          <lucide-icon [img]="icons.Download" [size]="18" /> Export CSV
+        </button>
+        <button appButton variant="outline" type="button" (click)="fileInput.click()">
+          <lucide-icon [img]="icons.Upload" [size]="18" /> Import CSV
+        </button>
+        <input #fileInput hidden type="file" accept=".csv,text/csv" (change)="onFileChosen($event)" />
+      </div>
+      @if (exportNote()) {
+        <p class="caption note">{{ exportNote() }}</p>
+      }
+
+      @if (preview(); as p) {
+        <div class="preview">
+          <strong>{{ p.fileName }}</strong>
+          <p class="caption">
+            {{ p.sessions.length }} workouts · {{ p.sets }} sets
+            @if (p.duplicates) {
+              · {{ p.duplicates }} already imported (skipped)
+            }
+          </p>
+          @if (p.unmatched.length) {
+            <p class="caption">Not in the exercise library (kept as custom): {{ p.unmatched.join(', ') }}</p>
+          }
+          <div class="data-actions">
+            <button appButton variant="ghost" type="button" (click)="cancelImport()">Cancel</button>
+            <button appButton variant="accent" type="button" [disabled]="importing()" (click)="confirmImport()">
+              {{ importing() ? 'Importing…' : 'Import ' + p.sessions.length + ' workouts' }}
+            </button>
+          </div>
+        </div>
+      }
+      @if (importNote()) {
+        <p class="caption note">{{ importNote() }}</p>
+      }
+    </app-card>
+  </div>
+</div>

@@ -11,6 +11,10 @@
 }
 
 .hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
   padding: 22px 0 2px;
 
   p,
@@ -157,21 +161,28 @@
 .routine--new {
   justify-content: center;
   align-items: center;
-  border: 2px dashed var(--gt-color-line);
+  gap: 10px;
+  @include mixins.jelly-surface;
   border-radius: var(--gt-radius-xl);
-  color: var(--gt-color-muted);
+  color: var(--gt-color-ink);
   font-weight: 600;
   text-decoration: none;
+  transition: transform 120ms ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
 }
 
 .plus {
+  --jelly: var(--gt-color-lime);
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  background: var(--gt-color-surface);
-  color: var(--gt-color-ink);
+  @include mixins.jelly;
+  color: #111;
 }
 
 .recent {
@@ -209,4 +220,16 @@
 
 .chevron {
   color: var(--gt-color-subtle);
+}
+
+.pr-icon {
+  --jelly: var(--gt-color-pink);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  @include mixins.jelly(sm, $glow: false);
+  color: #111;
 }

@@ -6,6 +6,12 @@
       <h3>{{ s.routineName }}</h3>
       <p class="caption">{{ s.startedAt | date: 'EEE d MMM · HH:mm' }}</p>
     </div>
+    @if (s.prs?.length) {
+      <span class="pr-badge" [attr.aria-label]="s.prs!.length + ' personal records'">
+        <lucide-icon [img]="icons.Trophy" [size]="13" />
+        PR{{ s.prs!.length > 1 ? ' ×' + s.prs!.length : '' }}
+      </span>
+    }
     <lucide-icon class="chevron" [img]="icons.ChevronDown" [size]="20" />
   </div>
   <dl class="metrics">
@@ -17,6 +23,21 @@
 
 @if (expanded()) {
   <div class="details" animate.enter="fade-in">
+    @if (s.prs?.length) {
+      <ul class="prs">
+        @for (pr of s.prs; track pr.exerciseId + pr.kind) {
+          <li>
+            <lucide-icon class="pr-icon" [img]="icons.Trophy" [size]="14" />
+            <span class="pr-text">
+              <strong>{{ pr.exerciseName }}</strong>
+              {{ pr.kind === 'weight' ? 'New heaviest' : 'Est. 1RM' }}
+              {{ pr.value | number: '1.0-1' }} kg
+              <span class="was">(was {{ pr.previous | number: '1.0-1' }})</span>
+            </span>
+          </li>
+        }
+      </ul>
+    }
     @for (entry of s.exercises; track entry.id) {
       <div class="exercise">
         <img appImgFallback class="thumb" width="44" height="44" loading="lazy" [src]="entry.image | exerciseImage" alt="" />
@@ -24,8 +45,8 @@
           <h4>{{ entry.exerciseName }}</h4>
           <ol class="sets">
             @for (set of entry.sets; track set.id; let i = $index) {
-              <li [class.done]="set.completed">
-                <span class="set-no">{{ i + 1 }}</span>
+              <li [class.done]="set.completed && !set.warmup" [class.warmup]="set.warmup">
+                <span class="set-no">{{ set.warmup ? 'W' : i + 1 }}</span>
                 {{ set.weight ?? '–' }} kg × {{ set.reps ?? '–' }}
               </li>
             }

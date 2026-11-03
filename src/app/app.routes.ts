@@ -24,5 +24,9 @@ export const routes: Routes = [
     path: 'history',
     loadChildren: () => import('@features/tracking/tracking.routes').then((m) => m.TRACKING_ROUTES),
   },
+  {
+    path: 'settings',
+    loadChildren: () => import('@features/settings/settings.routes').then((m) => m.SETTINGS_ROUTES),
+  },
   { path: '**', redirectTo: 'home' },
 ];

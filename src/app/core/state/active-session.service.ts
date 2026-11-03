@@ -1,11 +1,18 @@
 import { computed, DestroyRef, effect, inject, Injectable, signal } from '@angular/core';
 import { createId } from '@core/utils/id';
 import { cloneEntries, computeTotals } from '@core/utils/workout.utils';
+import { detectPrs } from '@core/training/records';
+import { lastPerformance } from '@core/training/performance';
+import { suggestNext } from '@core/training/progression';
 import { ActiveSessionDraft, ExerciseEntry, Routine, WorkoutSession } from '@shared/models';
+import { RestTimerService } from './rest-timer.service';
 import { RoutineStore } from './routine.store';
 import { SessionStore } from './session.store';
 
 const STORAGE_KEY = 'gym-track.active-session';
+
+/** Draft plus the progression reasons shown on each entry (keyed by entry id). */
+export type SessionDraft = ActiveSessionDraft & { suggestions?: Record<string, string> };
 
 /**
  * Holds the workout currently in progress. Lives at root so the timer keeps
@@ -16,8 +23,9 @@ const STORAGE_KEY = 'gym-track.active-session';
 export class ActiveSessionService {
   private readonly sessionStore = inject(SessionStore);
   private readonly routineStore = inject(RoutineStore);
+  private readonly restTimer = inject(RestTimerService);
 
-  private readonly _draft = signal<ActiveSessionDraft | null>(readStoredDraft());
+  private readonly _draft = signal<SessionDraft | null>(readStoredDraft());
   /** Wall-clock tick; only advances while a session is active. */
   private readonly now = signal(Date.now());
   private tickHandle: ReturnType<typeof setInterval> | null = null;
@@ -50,13 +58,17 @@ export class ActiveSessionService {
   }
 
   start(routine: Routine | null): void {
+    const startedAt = new Date().toISOString();
+    this.restTimer.skip();
     this._draft.set({
       routineId: routine?.id ?? null,
       routineName: routine?.name ?? 'Quick workout',
-      startedAt: new Date().toISOString(),
+      startedAt,
       exercises: routine ? cloneEntries(routine.exercises) : [],
     });
     this.now.set(Date.now());
+    // Targets need history; apply them as soon as it's loaded (usually already is).
+    if (routine) void this.sessionStore.load().then(() => this.applyProgression(startedAt));
   }
 
   /** Apply any immutable transform to the exercise list (see core/utils/workout.utils). */
@@ -65,13 +77,18 @@ export class ActiveSessionService {
   }
 
   discard(): void {
+    this.restTimer.skip();
     this._draft.set(null);
   }
 
-  /** Persists the session (completed sets only count towards totals) and clears the draft. */
+  /** Persists the session (completed working sets count towards totals and PRs) and clears the draft. */
   async finish(): Promise<WorkoutSession | null> {
     const draft = this._draft();
     if (!draft) return null;
+
+    // PRs compare against every earlier session, so history must be loaded first.
+    await this.sessionStore.load();
+    const prs = detectPrs(draft.exercises, this.sessionStore.sessions());
 
     const endedAt = new Date();
     const totals = computeTotals(draft.exercises, true);
@@ -86,14 +103,37 @@ export class ActiveSessionService {
       totalVolume: totals.volume,
       totalSets: totals.sets,
       totalReps: totals.reps,
+      ...(prs.length ? { prs } : {}),
     };
 
     const saved = await this.sessionStore.save(session);
     if (draft.routineId) {
       await this.routineStore.markPerformed(draft.routineId, saved.endedAt);
     }
+    this.restTimer.skip();
     this._draft.set(null);
     return saved;
+  }
+
+  /** Pre-fills working sets from each entry's progression rule and records why. */
+  private applyProgression(startedAt: string): void {
+    const draft = this._draft();
+    // The user may have started another workout before history finished loading.
+    if (!draft || draft.startedAt !== startedAt) return;
+
+    const sessions = this.sessionStore.sessions();
+    const suggestions: Record<string, string> = {};
+    const exercises = draft.exercises.map((entry) => {
+      const last = lastPerformance(sessions, entry.exerciseId)?.sets ?? null;
+      const next = suggestNext(entry.progression, entry.sets, last);
+      if (!next) return entry;
+      suggestions[entry.id] = next.reason;
+      return {
+        ...entry,
+        sets: entry.sets.map((s) => (s.warmup ? s : { ...s, weight: next.weight, reps: next.reps })),
+      };
+    });
+    if (Object.keys(suggestions).length) this._draft.set({ ...draft, exercises, suggestions });
   }
 
   private startTicking(): void {
@@ -108,10 +148,10 @@ export class ActiveSessionService {
   }
 }
 
-function readStoredDraft(): ActiveSessionDraft | null {
+function readStoredDraft(): SessionDraft | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as ActiveSessionDraft) : null;
+    return raw ? (JSON.parse(raw) as SessionDraft) : null;
   } catch {
     return null;
   }

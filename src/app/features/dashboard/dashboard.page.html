@@ -1,7 +1,12 @@
 <div class="page">
   <header class="hero">
-    <p class="caption">{{ today | date: 'EEEE, d MMMM' }}</p>
-    <h1 class="display-heading--lg">{{ greeting }}</h1>
+    <div>
+      <p class="caption">{{ today | date: 'EEEE, d MMMM' }}</p>
+      <h1 class="display-heading--lg">{{ greeting }}</h1>
+    </div>
+    <a appButton variant="outline" iconOnly routerLink="/settings" aria-label="Settings">
+      <lucide-icon [img]="icons.Settings" [size]="20" />
+    </a>
   </header>
 
   @if (activeSession.isActive()) {
@@ -19,6 +24,27 @@
   }
 
   <app-training-breakdown [sessions]="sessions()" />
+
+  @if (recentPrs().length) {
+    <section class="section">
+      <div class="section-head">
+        <h2 class="display-heading">Recent PRs</h2>
+        <span class="caption">Last 7 days</span>
+      </div>
+      <app-card padding="none">
+        @for (pr of recentPrs(); track pr.sessionId + pr.exerciseId + pr.kind) {
+          <a class="recent" routerLink="/history" [queryParams]="{ session: pr.sessionId }">
+            <span class="pr-icon"><lucide-icon [img]="icons.Trophy" [size]="16" /></span>
+            <div class="recent-main">
+              <strong>{{ pr.exerciseName }}</strong>
+              <span class="caption">{{ pr.kind === 'weight' ? 'Heaviest set' : 'Est. 1RM' }} · {{ pr.date | date: 'EEE d MMM' }}</span>
+            </div>
+            <span class="recent-volume">{{ pr.value | number: '1.0-1' }} kg</span>
+          </a>
+        }
+      </app-card>
+    </section>
+  }
 
   <section class="section">
     <div class="section-head">
@@ -79,3 +105,13 @@
     </section>
   }
 </div>
+
+@if (reminderOpen()) {
+  <app-weight-reminder
+    [lastKg]="latestWeight()?.kg ?? null"
+    [daysSinceLast]="daysSinceWeighIn()"
+    [saving]="savingWeight()"
+    (logged)="logWeight($event)"
+    (snoozed)="snoozeWeighIn()"
+  />
+}

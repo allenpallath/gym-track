@@ -81,14 +81,14 @@ export interface WorkoutTotals {
   reps: number;
 }
 
-/** Volume = Σ weight × reps. Pass `completedOnly` for sessions. */
+/** Volume = Σ weight × reps over working sets (warm-ups excluded). Pass `completedOnly` for sessions. */
 export function computeTotals(entries: ExerciseEntry[], completedOnly = false): WorkoutTotals {
   let volume = 0;
   let sets = 0;
   let reps = 0;
   for (const entry of entries) {
     for (const set of entry.sets) {
-      if (completedOnly && !set.completed) continue;
+      if (set.warmup || (completedOnly && !set.completed)) continue;
       const r = set.reps ?? 0;
       sets += 1;
       reps += r;

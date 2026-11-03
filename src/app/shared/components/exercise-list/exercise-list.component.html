@@ -69,7 +69,7 @@
           [class.row--clickable]="mode() === 'browse'"
           (click)="onRowClick(e)"
         >
-          <img appImgFallback class="thumb" width="84" height="84" loading="lazy" [src]="e.images[0] | exerciseImage" [alt]="e.name" />
+          <img appImgFallback class="thumb" width="114" height="76" loading="lazy" [src]="e.images[0] | exerciseImage" [alt]="e.name" />
           <div class="info">
             <h3 class="name">{{ e.name }}</h3>
             <p class="meta">
@@ -78,7 +78,6 @@
                 · {{ e.equipment }}
               }
             </p>
-            <p class="desc line-clamp-2">{{ e.instructions[0] }}</p>
           </div>
           @if (mode() === 'pick') {
             @if (addedIds().has(e.id)) {
